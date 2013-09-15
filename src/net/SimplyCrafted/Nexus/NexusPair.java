@@ -62,7 +62,7 @@ public class NexusPair {
         return location;
     }
 
-    private void createPadAtPlayer (Player player) {
+    private Location createPadAtPlayer (Player player) {
         // Place a block under the player's feet, and pop a stone
         // pressure plate upon it.
         Material padMaterial;
@@ -74,10 +74,25 @@ public class NexusPair {
             // The player is not holding an opaque block, so get the configured material
             padMaterial = Material.getMaterial(nexus.getConfig().getString("padmaterial"));
         }
-        here = player.getWorld().getBlockAt(player.getLocation());
+        here = player.getWorld().getBlockAt(createLocationFromPlayer(player));
         // Place the block below the player
         here.getRelative(BlockFace.DOWN).setType(padMaterial);
         // Place the pressure plate on the block
         here.setType(Material.STONE_PLATE);
+        return here.getLocation();
+    }
+
+    public void createPad (Player player, boolean hall, String town) {
+        if (hall) {
+            // Make the pad where the player is
+            hallPadLocation=createPadAtPlayer(player);
+        } else {
+            townPadLocation=createPadAtPlayer(player);
+        }
+        // Mark this NexusPair as established if the other location has also been created
+        if (townPadLocation != null && hallPadLocation != null) {
+            established = true;
+            Nexus.msgPlayer(player, String.format("Nexus created for %s; distance is %s", town, townPadLocation.distance(hallPadLocation)));
+        }
     }
 }

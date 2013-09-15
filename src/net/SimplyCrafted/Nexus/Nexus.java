@@ -29,6 +29,10 @@ public class Nexus extends JavaPlugin {
     // Map of serialized coordinates to other end locations
     public HashMap <String, Location> NexusMap;
 
+    public Nexus() {
+        NexusMap = new HashMap<String, Location>();
+    }
+
     @Override
     public void onEnable() {
         saveDefaultConfig();

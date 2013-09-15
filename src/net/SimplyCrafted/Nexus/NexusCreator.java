@@ -145,12 +145,8 @@ public class NexusCreator {
         // Remove it from the main hash, it's not going to be valid now.
         // Don't particularly care if it fails, that just means it was
         // never hashed anyway,.
-        try {nexus.NexusMap.remove(getSerializedTownLocation());} catch (NullPointerException nothing) {
-            // Nothing.
-        }
-        try {nexus.NexusMap.remove(getSerializedHallLocation());} catch (NullPointerException nothing) {
-            // Nothing.
-        }
+        nexus.NexusMap.remove(getSerializedTownLocation());
+        nexus.NexusMap.remove(getSerializedHallLocation());
         if (hall) {
             // Remove previous pad, if there is one
             if (hallPadLocation != null) {
@@ -175,8 +171,8 @@ public class NexusCreator {
             established = true;
             Nexus.msgPlayer(player, String.format("Nexus created for %s; distance is %.1fm", town, townPadLocation.distance(hallPadLocation)));
             // Hash the new locations
-            //nexus.NexusMap.put(getSerializedHallLocation(),townPadLocation);
-            //nexus.NexusMap.put(getSerializedTownLocation(),hallPadLocation);
+            nexus.NexusMap.put(getSerializedHallLocation(),townPadLocation);
+            nexus.NexusMap.put(getSerializedTownLocation(),hallPadLocation);
         }
     }
 

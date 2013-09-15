@@ -92,16 +92,12 @@ public class NexusCreator {
         String tempLoc;
         boolean establishFlag = false;
         tempLoc = nexus.getConfig().getString("pairs." + name + ".hallLocation");
-        nexus.getLogger().info(name);
         if (tempLoc != null) {
-            nexus.getLogger().info("Loading hall");
             hallPadLocation = unserializeLocation(tempLoc);
             establishFlag = true;
         }
         tempLoc = nexus.getConfig().getString("pairs." + name + ".townLocation");
-        nexus.getLogger().info(name);
         if (tempLoc != null) {
-            nexus.getLogger().info("Loading town");
             townPadLocation = unserializeLocation(tempLoc);
             if (establishFlag) established = true;
         }
@@ -156,33 +152,26 @@ public class NexusCreator {
             // Nothing.
         }
         if (hall) {
-            nexus.getLogger().info("Dealing with Hall");
             // Remove previous pad, if there is one
             if (hallPadLocation != null) {
                 // Destroy the blocks
-                nexus.getLogger().info("Destroying hall");
                 hallPadLocation.getBlock().getRelative(BlockFace.DOWN).setType(Material.STONE);
                 hallPadLocation.getBlock().setType(Material.AIR);
             }
-            nexus.getLogger().info("Building hall");
             // Make the new pad where the player is
             hallPadLocation=createPadAtPlayer();
         } else {
-            nexus.getLogger().info("Dealing with Town");
             // Remove previous pad, if there is one
             if (townPadLocation != null) {
                 // Destroy the blocks
-                nexus.getLogger().info("Destroying town");
                 townPadLocation.getBlock().getRelative(BlockFace.DOWN).setType(Material.STONE);
                 townPadLocation.getBlock().setType(Material.AIR);
             }
-            nexus.getLogger().info("Building town");
             // Make the pad where the player is
             townPadLocation=createPadAtPlayer();
         }
         // Mark this Nexus as established if the other location has also been created
         if (townPadLocation != null && hallPadLocation != null) {
-            nexus.getLogger().info("Marking established");
             established = true;
             Nexus.msgPlayer(player, String.format("Nexus created for %s; distance is %.1fm", town, townPadLocation.distance(hallPadLocation)));
             // Hash the new locations
@@ -193,7 +182,6 @@ public class NexusCreator {
 
     public void close() {
         // Always call this method after you're done creating a Nexus.
-        nexus.getLogger().info("Closing");
         nexus.getConfig().set("pairs."+town+".hallLocation",serializeLocation(hallPadLocation));
         nexus.getConfig().set("pairs."+town+".townLocation",serializeLocation(townPadLocation));
     }

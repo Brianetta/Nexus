@@ -25,8 +25,4 @@ public class NexusListener implements Listener {
     public NexusListener(Nexus instance) {
         this.nexus = instance;
     }
-
-    public static void msgPlayer(Player player,String msg) {
-        if (!msg.isEmpty()) player.sendMessage(ChatColor.GOLD + "[Nexus] " + ChatColor.GRAY + msg);
-    }
 }

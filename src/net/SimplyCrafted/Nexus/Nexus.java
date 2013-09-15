@@ -1,5 +1,9 @@
 package net.SimplyCrafted.Nexus;
 
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -26,5 +30,21 @@ public class Nexus extends JavaPlugin {
     @Override
     public void onDisable() {
         saveConfig();
+    }
+
+    public static void msgPlayer(Player player,String msg) {
+        if (!msg.isEmpty()) player.sendMessage(ChatColor.GOLD + "[Nexus] " + ChatColor.GRAY + msg);
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if (cmd.getName().equalsIgnoreCase("Nexus")) {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("This command is not intended for console use");
+                return true;
+            }
+            sender.sendMessage("OK.");
+        }
+        return true;
     }
 }

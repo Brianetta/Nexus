@@ -1,0 +1,23 @@
+name: Nexus
+main: net.SimplyCrafted.Nexus.Nexus
+version: 0.1
+author: Brian Ronald
+commands:
+    nexus:
+        description: Creates and activates a Nexus pad
+        usage: |
+            /nexus build <town> town
+            /nexus build <town> hall
+            /nexus check <town>
+permissions:
+    Nexus.*:
+        description: Access to all Nexus commands
+        children:
+            Nexus.create: true
+            Nexus.request: true
+    Nexus.create:
+        description: Can create and activate Nexus pads
+        default: op
+    Nexus.request:
+        description: Can request a new Nexus pad
+        default: op

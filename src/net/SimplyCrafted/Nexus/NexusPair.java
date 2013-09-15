@@ -95,4 +95,10 @@ public class NexusPair {
             Nexus.msgPlayer(player, String.format("Nexus created for %s; distance is %s", town, townPadLocation.distance(hallPadLocation)));
         }
     }
+
+    public void save(String town) {
+        nexus.getConfig().set("nexus.pairs."+town+".hallLocation",hallPadLocation.toString());
+        nexus.getConfig().set("nexus.pairs."+town+".townLocation",townPadLocation.toString());
+        nexus.getConfig().set("nexus.pairs."+town+".paid",paid);
+    }
 }

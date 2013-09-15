@@ -43,7 +43,12 @@ public class Nexus extends JavaPlugin {
                 sender.sendMessage("This command is not intended for console use");
                 return true;
             }
-            sender.sendMessage("OK.");
+            if (args.length > 0) {
+                if (args[0].equalsIgnoreCase("build") && args.length == 3 && (args[2].equalsIgnoreCase("hall") || args[2].equalsIgnoreCase("town"))) {
+                    // Player typed /nexus build <something> <town|hall>
+                    msgPlayer((Player) sender, "Building " + args[2] + " pad for " + args[1]);
+                }
+            } else return false;
         }
         return true;
     }

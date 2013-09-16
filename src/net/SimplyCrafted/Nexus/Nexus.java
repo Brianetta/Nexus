@@ -26,11 +26,11 @@ import java.util.HashMap;
 
 public class Nexus extends JavaPlugin {
 
-    // Map of serialized coordinates to other end locations
-    public HashMap <String, Location> NexusMap;
+    // Map of serialized coordinates to town names
+    public HashMap <String, String> NexusMap;
 
     public Nexus() {
-        NexusMap = new HashMap<String, Location>();
+        NexusMap = new HashMap<String, String>();
     }
 
     @Override
@@ -38,24 +38,25 @@ public class Nexus extends JavaPlugin {
         saveDefaultConfig();
         NexusCreator nexusCreator;
         for (String configKeys : getConfig().getKeys(true)) {
-            getLogger().info(configKeys);
             // Magic numbers:
             // 5 is the position of the '.' in "pairs."
             // 6 is the position of the next character.
-            if (configKeys.startsWith("pairs.") && configKeys.lastIndexOf(".") == 6) {
+            if (configKeys.startsWith("pairs.") && configKeys.lastIndexOf(".") == 5) {
                 // configKeys.substring(6) is a town name
                 nexusCreator = new NexusCreator(this,configKeys.substring(6),null);
                 // Hash the serialized string version of a location with its actual paired destination
-                NexusMap.put(nexusCreator.getSerializedHallLocation(), nexusCreator.getTownPadLocation());
-                NexusMap.put(nexusCreator.getSerializedTownLocation(), nexusCreator.getHallPadLocation());
-                getLogger().info("Loaded and hashed town: " + nexusCreator.getName());
+                NexusMap.put(nexusCreator.getSerializedHallLocation(), nexusCreator.getName());
+                NexusMap.put(nexusCreator.getSerializedTownLocation(), nexusCreator.getName());
+                getLogger().info("Loaded and hashed Nexus for: " + nexusCreator.getName());
             }
         }
     }
 
     @Override
     public void onDisable() {
+        getLogger().info("Saving Nexus info");
         saveConfig();
+        getLogger().info("Clearing Nexus hash");
         NexusMap.clear();
     }
 

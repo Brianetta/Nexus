@@ -171,8 +171,8 @@ public class NexusCreator {
             established = true;
             Nexus.msgPlayer(player, String.format("Nexus created for %s; distance is %.1fm", town, townPadLocation.distance(hallPadLocation)));
             // Hash the new locations
-            nexus.NexusMap.put(getSerializedHallLocation(),townPadLocation);
-            nexus.NexusMap.put(getSerializedTownLocation(),hallPadLocation);
+            nexus.NexusMap.put(getSerializedHallLocation(),town);
+            nexus.NexusMap.put(getSerializedTownLocation(),town);
         }
     }
 

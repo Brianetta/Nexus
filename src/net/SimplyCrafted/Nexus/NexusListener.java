@@ -1,6 +1,8 @@
 package net.SimplyCrafted.Nexus;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -30,6 +32,12 @@ public class NexusListener implements Listener {
         this.nexus = instance;
     }
 
+    private String hashLocation (Location location) {
+        if (location == null) return "null";
+        // Adding 0.5 to match the half-block position that's stored in the hash
+        return String.format("%s %f %f %f", location.getWorld().getName(), location.getX() + 0.5F, location.getY() + 0.5F, location.getZ() + 0.5F);
+    }
+
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerInteractEvent (PlayerInteractEvent event) {
         // Check whether the block still exists
@@ -38,7 +46,10 @@ public class NexusListener implements Listener {
         if (!(event.getClickedBlock().getState().getType() == Material.STONE_PLATE)) return;
         // Check that that something involved, you know, feet
         if (!(event.getAction() == Action.PHYSICAL)) return;
-        Nexus.msgPlayer(event.getPlayer(), "Pressure plate activated. I saw it.");
+        // Try to get the name of the town from the hash, using the location of the pressure plate
+        String town = nexus.NexusMap.get(hashLocation(event.getClickedBlock().getLocation()));
+        if (town != null) {
+            nexus.msgPlayer(event.getPlayer(),"That was a Nexus pad for " + town);
+        }
     }
-
 }

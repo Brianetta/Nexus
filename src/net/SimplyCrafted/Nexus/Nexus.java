@@ -46,8 +46,8 @@ public class Nexus extends JavaPlugin {
                 // configKeys.substring(6) is a town name
                 nexusCreator = new NexusCreator(this,configKeys.substring(6),null);
                 // Hash the serialized string version of a location with its actual paired destination
-                NexusMap.put(nexusCreator.getSerializedHallLocation(), nexusCreator.getName());
-                NexusMap.put(nexusCreator.getSerializedTownLocation(), nexusCreator.getName());
+                NexusMap.put(nexusCreator.getHashHallLocation(), nexusCreator.getName());
+                NexusMap.put(nexusCreator.getHashTownLocation(), nexusCreator.getName());
                 getLogger().info("Loaded and hashed Nexus for: " + nexusCreator.getName());
             }
         }

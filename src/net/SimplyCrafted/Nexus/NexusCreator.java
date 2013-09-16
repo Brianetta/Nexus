@@ -57,7 +57,6 @@ public class NexusCreator {
 
     private String serializeLocation (Location location) {
         if (location == null) return "null";
-        // Truncate all the floats (discarding 0.5) for simplicity
         return String.format("%s %f %f %f %f", location.getWorld().getName(), location.getX(), location.getY(), location.getZ(), location.getYaw());
     }
 
@@ -67,6 +66,21 @@ public class NexusCreator {
 
     public String getSerializedHallLocation () {
         return serializeLocation(hallPadLocation);
+    }
+
+    // These next three are like the three above, but have no Yaw info.
+
+    private String hashLocation (Location location) {
+        if (location == null) return "null";
+        return String.format("%s %f %f %f", location.getWorld().getName(), location.getX(), location.getY(), location.getZ());
+    }
+
+    public String getHashTownLocation () {
+        return hashLocation(townPadLocation);
+    }
+
+    public String getHashHallLocation () {
+        return hashLocation(hallPadLocation);
     }
 
     private Location unserializeLocation (String string) {
@@ -171,8 +185,8 @@ public class NexusCreator {
             established = true;
             Nexus.msgPlayer(player, String.format("Nexus created for %s; distance is %.1fm", town, townPadLocation.distance(hallPadLocation)));
             // Hash the new locations
-            nexus.NexusMap.put(getSerializedHallLocation(),town);
-            nexus.NexusMap.put(getSerializedTownLocation(),town);
+            nexus.NexusMap.put(getHashHallLocation(),town);
+            nexus.NexusMap.put(getHashTownLocation(),town);
         }
     }
 

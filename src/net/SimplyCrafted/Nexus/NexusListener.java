@@ -1,8 +1,12 @@
 package net.SimplyCrafted.Nexus;
 
-import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 /**
  * Copyright © Brian Ronald
@@ -25,4 +29,16 @@ public class NexusListener implements Listener {
     public NexusListener(Nexus instance) {
         this.nexus = instance;
     }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onPlayerInteractEvent (PlayerInteractEvent event) {
+        // Check whether the block still exists
+        if (event.getClickedBlock() == null) return;
+        // Check the player did something to a stone pressure plate
+        if (!(event.getClickedBlock().getState().getType() == Material.STONE_PLATE)) return;
+        // Check that that something involved, you know, feet
+        if (!(event.getAction() == Action.PHYSICAL)) return;
+        Nexus.msgPlayer(event.getPlayer(), "Pressure plate activated. I saw it.");
+    }
+
 }

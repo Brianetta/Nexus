@@ -22,7 +22,7 @@ import org.bukkit.entity.Player;
  * GNU General Public License for more details.
  */
 
-public class NexusCreator {
+public class NexusHandler {
     // This plugin was designed for the Simply Crafted SMP server, where a hall
     // contains one end of each nexus pad pair, and a town contains the other
     // end. The hall is, literally, a nexus. So, the two locations are stored
@@ -99,7 +99,7 @@ public class NexusCreator {
         }
     }
 
-    public NexusCreator(Nexus instance, String name, Player creator) {
+    public NexusHandler(Nexus instance, String name, Player creator) {
         this.nexus = instance;
         town = name;
         player = creator;

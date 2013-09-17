@@ -37,18 +37,18 @@ public class Nexus extends JavaPlugin {
     @Override
     public void onEnable() {
         saveDefaultConfig();
-        NexusCreator nexusCreator;
+        NexusHandler nexusHandler;
         for (String configKeys : getConfig().getKeys(true)) {
             // Magic numbers:
             // 5 is the position of the '.' in "pairs."
             // 6 is the position of the next character.
             if (configKeys.startsWith("pairs.") && configKeys.lastIndexOf(".") == 5) {
                 // configKeys.substring(6) is a town name
-                nexusCreator = new NexusCreator(this,configKeys.substring(6),null);
+                nexusHandler = new NexusHandler(this,configKeys.substring(6),null);
                 // Hash the serialized string version of a location with its actual paired destination
-                NexusMap.put(nexusCreator.getHashHallLocation(), nexusCreator.getName());
-                NexusMap.put(nexusCreator.getHashTownLocation(), nexusCreator.getName());
-                getLogger().info("Loaded and hashed Nexus for: " + nexusCreator.getName());
+                NexusMap.put(nexusHandler.getHashHallLocation(), nexusHandler.getName());
+                NexusMap.put(nexusHandler.getHashTownLocation(), nexusHandler.getName());
+                getLogger().info("Loaded and hashed Nexus for: " + nexusHandler.getName());
             }
         }
         // Register the handler that detects the player treading on a pad
@@ -82,12 +82,12 @@ public class Nexus extends JavaPlugin {
                         if (args.length == 3) {
                             if (args[2].equalsIgnoreCase("town")) {
                                 msgPlayer(player, "Building town pad for " + args[1]);
-                                NexusCreator pair = new NexusCreator(this,args[1],player);
+                                NexusHandler pair = new NexusHandler(this,args[1],player);
                                 pair.createPad(false);
                                 pair.close();
                             } else if (args[2].equalsIgnoreCase("hall")) {
                                 msgPlayer(player, "Building hall pad for " + args[1]);
-                                NexusCreator pair = new NexusCreator(this,args[1],player);
+                                NexusHandler pair = new NexusHandler(this,args[1],player);
                                 pair.createPad(true);
                                 pair.close();
                             }

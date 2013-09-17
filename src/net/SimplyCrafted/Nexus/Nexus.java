@@ -91,14 +91,12 @@ public class Nexus extends JavaPlugin {
 
         public void run() {
             nexus.Cooldown.remove(name);
-            nexus.getLogger().info(name + " unlocked");
         }
     }
 
     // Place a lock on a player (a flag in a hash) then schedule a task to remove the lock
     public void lock(String player) {
         Cooldown.put(player, true);
-        getLogger().info(player + " locked");
         // Schedule unlock by "delay" seconds
         getServer().getScheduler().scheduleSyncDelayedTask(this, new Unlock(this,player),10 * getConfig().getLong("delay"));
     }

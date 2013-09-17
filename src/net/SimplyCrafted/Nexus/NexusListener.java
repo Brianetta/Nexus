@@ -51,8 +51,9 @@ public class NexusListener implements Listener {
         if ((town != null) && !(nexus.isLocked(event.getPlayer().getName()))) {
             nexus.lock(event.getPlayer().getName());
             NexusHandler pair = new NexusHandler(nexus,town,event.getPlayer());
-            pair.teleportFurthest();
-            nexus.msgPlayer(event.getPlayer(),"Teleported through " + town);
+            if (pair.isEstablished()) {
+                pair.teleportFurthest();
+            }
         }
     }
 }

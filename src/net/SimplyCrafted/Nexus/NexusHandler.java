@@ -191,24 +191,54 @@ public class NexusHandler {
         }
     }
 
+    // Schedulable runnable that removes the lock
+    private class Teleport implements Runnable {
+        private final Nexus nexus;
+        private final String town;
+        private final Player player;
+        private final Location destination;
+        private final Location source;
+
+        Teleport (Nexus nexus, String town, Player player, Location source, Location destination) {
+            this.nexus = nexus;
+            this.town = town;
+            this.player = player;
+            this.destination = destination;
+            this.source = source;
+        }
+
+        public void run() {
+            source.setY(source.getY() - 0.5); // Bring it to ground level
+            if (player.getLocation().distance(source) < 0.5) {
+                // Player's on the pad
+                player.teleport(destination);
+                nexus.msgPlayer(player,"Traveled using the "+town+" Nexus pad");
+            } else {
+                nexus.msgPlayer(player,"Nexus transport failed; "+player.getName()+" wasn't standing in the middle");
+            }
+        }
+    }
+
     public void teleportFurthest() {
         // Move player to opposite pad
 
         // Copy location
         Location playerLocation = player.getLocation().clone();
-        Location destination;
+        Location source, destination;
         if (playerLocation.distanceSquared(townPadLocation) > playerLocation.distanceSquared(hallPadLocation)) {
             // Hall pad is nearest
+            source = hallPadLocation.clone();
             destination = townPadLocation.clone();
         } else {
             // Town pad is nearest, or as far
+            source = townPadLocation.clone();
             destination = hallPadLocation.clone();
         }
         // Make it as transparent as possible
         destination.setPitch(playerLocation.getPitch());
 
-        // Go!
-        player.teleport(destination);
+        // Go!  Magic number 5 is about how many ticks it takes a walking player to get onto the pad. Trial and error.
+        nexus.getServer().getScheduler().scheduleSyncDelayedTask(nexus, new Teleport(nexus, town, player, source, destination),5);
     }
 
     public void close() {

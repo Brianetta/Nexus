@@ -48,8 +48,11 @@ public class NexusListener implements Listener {
         if (!(event.getAction() == Action.PHYSICAL)) return;
         // Try to get the name of the town from the hash, using the location of the pressure plate
         String town = nexus.NexusMap.get(hashLocation(event.getClickedBlock().getLocation()));
-        if (town != null) {
-            nexus.msgPlayer(event.getPlayer(),"That was a Nexus pad for " + town);
+        if ((town != null) && !(nexus.isLocked(event.getPlayer().getName()))) {
+            nexus.lock(event.getPlayer().getName());
+            NexusHandler pair = new NexusHandler(nexus,town,event.getPlayer());
+            pair.teleportFurthest();
+            nexus.msgPlayer(event.getPlayer(),"Teleported through " + town);
         }
     }
 }

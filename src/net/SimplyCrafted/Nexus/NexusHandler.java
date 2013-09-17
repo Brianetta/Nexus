@@ -6,6 +6,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 /**
  * Copyright © Brian Ronald
@@ -188,6 +189,26 @@ public class NexusHandler {
             nexus.NexusMap.put(getHashHallLocation(),town);
             nexus.NexusMap.put(getHashTownLocation(),town);
         }
+    }
+
+    public void teleportFurthest() {
+        // Move player to opposite pad
+
+        // Copy location
+        Location playerLocation = player.getLocation().clone();
+        Location destination;
+        if (playerLocation.distanceSquared(townPadLocation) > playerLocation.distanceSquared(hallPadLocation)) {
+            // Hall pad is nearest
+            destination = townPadLocation.clone();
+        } else {
+            // Town pad is nearest, or as far
+            destination = hallPadLocation.clone();
+        }
+        // Make it as transparent as possible
+        destination.setPitch(playerLocation.getPitch());
+
+        // Go!
+        player.teleport(destination);
     }
 
     public void close() {

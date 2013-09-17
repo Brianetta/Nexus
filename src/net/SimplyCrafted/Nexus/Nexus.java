@@ -30,8 +30,13 @@ public class Nexus extends JavaPlugin {
     // Map of serialized coordinates to town names
     public HashMap <String, String> NexusMap;
 
+    // Cooldown map; players hashed here have just teleported, and must wait before
+    // using another Nexus pad
+    public HashMap <String, Boolean> Cooldown;
+
     public Nexus() {
         NexusMap = new HashMap<String, String>();
+        Cooldown = new HashMap<String, Boolean>();
     }
 
     @Override
@@ -61,11 +66,41 @@ public class Nexus extends JavaPlugin {
         saveConfig();
         getLogger().info("Clearing Nexus hash");
         NexusMap.clear();
+        Cooldown.clear();
         PlayerInteractEvent.getHandlerList().unregister((Listener) this);
     }
 
     public static void msgPlayer(Player player,String msg) {
         if (!msg.isEmpty()) player.sendMessage(ChatColor.GOLD + "[Nexus] " + ChatColor.GRAY + msg);
+    }
+
+    // Check whether player has just been teleported
+    public boolean isLocked(String player) {
+        return Cooldown.containsKey(player);
+    }
+
+    // Schedulable runnable that removes the lock
+    private class Unlock implements Runnable {
+        private final String name;
+        private final Nexus nexus;
+
+        Unlock (Nexus nexus, String name) {
+            this.name = name;
+            this.nexus = nexus;
+        }
+
+        public void run() {
+            nexus.Cooldown.remove(name);
+            nexus.getLogger().info(name + " unlocked");
+        }
+    }
+
+    // Place a lock on a player (a flag in a hash) then schedule a task to remove the lock
+    public void lock(String player) {
+        Cooldown.put(player, true);
+        getLogger().info(player + " locked");
+        // Schedule unlock by "delay" seconds
+        getServer().getScheduler().scheduleSyncDelayedTask(this, new Unlock(this,player),10 * getConfig().getLong("delay"));
     }
 
     @Override

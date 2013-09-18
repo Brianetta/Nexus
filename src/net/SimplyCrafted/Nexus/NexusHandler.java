@@ -191,7 +191,7 @@ public class NexusHandler {
         }
     }
 
-    // Schedulable runnable that removes the lock
+    // Schedulable runnable that activates the teleport
     private class Teleport implements Runnable {
         private final Nexus nexus;
         private final String town;

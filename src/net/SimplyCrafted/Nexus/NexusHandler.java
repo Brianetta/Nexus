@@ -209,6 +209,10 @@ public class NexusHandler {
 
         public void run() {
             source.setY(source.getY() - 0.5); // Bring it to ground level
+            if (destination.getBlock().getType() != Material.STONE_PLATE) {
+                nexus.msgPlayer(player,"Traveling by "+town+" Nexus pad disabled; pressure plate is missing at other end");
+                return;
+            }
             if (player.getLocation().distance(source) < 0.5) {
                 // Player's on the pad
                 player.teleport(destination);

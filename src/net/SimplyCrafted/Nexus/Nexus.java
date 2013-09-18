@@ -137,8 +137,9 @@ public class Nexus extends JavaPlugin {
                             pair.remove();
                         }
                     }
-                } else if (args[0].equalsIgnoreCase("override")) {
-                    // Force teleport to other pad, even if they have been physically damaged
+                } else if (args[0].equalsIgnoreCase("override") && player.hasPermission("Nexus.create")) {
+                    // Force teleport to other pad, even if they have been physically damaged,
+                    // but only for players who can build them
                     Location here = player.getLocation().getBlock().getLocation(); // The block is aligned, the player is not
                     String town = NexusMap.get(String.format("%s %f %f %f",
                             here.getWorld().getName(),

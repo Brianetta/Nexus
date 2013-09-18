@@ -193,10 +193,14 @@ public class NexusHandler {
 
     public void remove () {
         // Remove pads and delete config for this pad
-        hallPadLocation.getBlock().getRelative(BlockFace.DOWN).setType(Material.STONE);
-        hallPadLocation.getBlock().setType(Material.AIR);
-        townPadLocation.getBlock().getRelative(BlockFace.DOWN).setType(Material.STONE);
-        townPadLocation.getBlock().setType(Material.AIR);
+        if (hallPadLocation != null) {
+            hallPadLocation.getBlock().getRelative(BlockFace.DOWN).setType(Material.STONE);
+            hallPadLocation.getBlock().setType(Material.AIR);
+        }
+        if (townPadLocation != null) {
+            townPadLocation.getBlock().getRelative(BlockFace.DOWN).setType(Material.STONE);
+            townPadLocation.getBlock().setType(Material.AIR);
+        }
         nexus.getConfig().set("pairs."+town,null);
         nexus.NexusMap.remove(getHashHallLocation());
         nexus.NexusMap.remove(getHashTownLocation());

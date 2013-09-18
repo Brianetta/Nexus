@@ -128,6 +128,14 @@ public class Nexus extends JavaPlugin {
                     } else {
                         msgPlayer(player, "You don't have permission to build a Nexus pad");
                     }
+                } else if (args[0].equalsIgnoreCase("destroy")) {
+                    if (player.hasPermission("Nexus.create")) {
+                        if (args.length == 2) {
+                            msgPlayer(player, "Destroying both pads for " + args[1]);
+                            NexusHandler pair = new NexusHandler(this,args[1],player);
+                            pair.remove();
+                        }
+                    }
                 }
             } else return false;
         }

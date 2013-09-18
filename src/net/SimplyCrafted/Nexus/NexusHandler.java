@@ -191,6 +191,17 @@ public class NexusHandler {
         }
     }
 
+    public void remove () {
+        // Remove pads and delete config for this pad
+        hallPadLocation.getBlock().getRelative(BlockFace.DOWN).setType(Material.STONE);
+        hallPadLocation.getBlock().setType(Material.AIR);
+        townPadLocation.getBlock().getRelative(BlockFace.DOWN).setType(Material.STONE);
+        townPadLocation.getBlock().setType(Material.AIR);
+        nexus.getConfig().set("pairs."+town,null);
+        nexus.NexusMap.remove(getHashHallLocation());
+        nexus.NexusMap.remove(getHashTownLocation());
+    }
+
     // Schedulable runnable that activates the teleport
     private class Teleport implements Runnable {
         private final Nexus nexus;

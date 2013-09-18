@@ -209,18 +209,20 @@ public class NexusHandler {
         private final Player player;
         private final Location destination;
         private final Location source;
+        private final boolean override;
 
-        Teleport (Nexus nexus, String town, Player player, Location source, Location destination) {
+        Teleport (Nexus nexus, String town, Player player, Location source, Location destination, boolean override) {
             this.nexus = nexus;
             this.town = town;
             this.player = player;
             this.destination = destination;
             this.source = source;
+            this.override = override;
         }
 
         public void run() {
             source.setY(source.getY() - 0.5); // Bring it to ground level
-            if (destination.getBlock().getType() != Material.STONE_PLATE) {
+            if (!(destination.getBlock().getType() == Material.STONE_PLATE || override)) {
                 nexus.msgPlayer(player,"Traveling by "+town+" Nexus pad disabled; pressure plate is missing at other end");
                 return;
             }
@@ -234,7 +236,7 @@ public class NexusHandler {
         }
     }
 
-    public void teleportFurthest() {
+    public void teleportFurthest(boolean override) {
         // Move player to opposite pad
 
         // Copy location
@@ -253,7 +255,7 @@ public class NexusHandler {
         destination.setPitch(playerLocation.getPitch());
 
         // Go!  Magic number 5 is about how many ticks it takes a walking player to get onto the pad. Trial and error.
-        nexus.getServer().getScheduler().scheduleSyncDelayedTask(nexus, new Teleport(nexus, town, player, source, destination),5);
+        nexus.getServer().getScheduler().scheduleSyncDelayedTask(nexus, new Teleport(nexus, town, player, source, destination, override),5);
     }
 
     public void close() {

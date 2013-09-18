@@ -1,6 +1,7 @@
 package net.SimplyCrafted.Nexus;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -136,6 +137,25 @@ public class Nexus extends JavaPlugin {
                             pair.remove();
                         }
                     }
+                } else if (args[0].equalsIgnoreCase("override")) {
+                    // Force teleport to other pad, even if they have been physically damaged
+                    Location here = player.getLocation().getBlock().getLocation(); // The block is aligned, the player is not
+                    String town = NexusMap.get(String.format("%s %f %f %f",
+                            here.getWorld().getName(),
+                            here.getX() + 0.5F,
+                            here.getY() + 0.5F,
+                            here.getZ() + 0.5F));
+                    if (town != null) {
+                        // We're on a pad location!
+                        NexusHandler pair = new NexusHandler(this, town, player);
+                        msgPlayer(player, "Forcing activation of "+town+" Nexus");
+                        // Lock the player against an immediate return
+                        lock(player.getName());
+                        pair.teleportFurthest(true);
+                    } else {
+                        msgPlayer(player, "This is not a Nexus pad location");
+                    }
+
                 }
             } else return false;
         }

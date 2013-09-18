@@ -51,7 +51,7 @@ public class NexusListener implements Listener {
             nexus.lock(event.getPlayer().getName());
             NexusHandler pair = new NexusHandler(nexus,town,event.getPlayer());
             if (pair.isEstablished()) {
-                pair.teleportFurthest();
+                pair.teleportFurthest(false);
             }
         }
     }

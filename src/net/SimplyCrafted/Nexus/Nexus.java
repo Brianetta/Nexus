@@ -68,7 +68,7 @@ public class Nexus extends JavaPlugin {
         getLogger().info("Clearing Nexus hash");
         NexusMap.clear();
         Cooldown.clear();
-        PlayerInteractEvent.getHandlerList().unregister((Listener) this);
+        PlayerInteractEvent.getHandlerList().unregister(this);
     }
 
     public static void msgPlayer(Player player,String msg) {

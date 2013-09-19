@@ -184,7 +184,10 @@ public class NexusHandler {
         // Mark this Nexus as established if the other location has also been created
         if (townPadLocation != null && hallPadLocation != null) {
             established = true;
-            Nexus.msgPlayer(player, String.format("Nexus created for %s; distance is %.1fm", town, townPadLocation.distance(hallPadLocation)));
+            if (hallPadLocation.getWorld().equals(townPadLocation.getWorld()))
+                Nexus.msgPlayer(player, String.format("Nexus created for %s; distance is %.1fm", town, townPadLocation.distance(hallPadLocation)));
+            else
+                Nexus.msgPlayer(player, String.format("Nexus created for %s; Nexus is trans-world", town));
             // Hash the new locations
             nexus.NexusMap.put(getHashHallLocation(),town);
             nexus.NexusMap.put(getHashTownLocation(),town);
@@ -246,14 +249,24 @@ public class NexusHandler {
         // Copy location
         Location playerLocation = player.getLocation().clone();
         Location source, destination;
-        if (playerLocation.distanceSquared(townPadLocation) > playerLocation.distanceSquared(hallPadLocation)) {
-            // Hall pad is nearest
-            source = hallPadLocation.clone();
-            destination = townPadLocation.clone();
+        if (hallPadLocation.getWorld().equals(playerLocation.getWorld()) && townPadLocation.getWorld().equals(playerLocation.getWorld())) {
+            if (playerLocation.distanceSquared(townPadLocation) > playerLocation.distanceSquared(hallPadLocation)) {
+                // Hall pad is nearest
+                source = hallPadLocation.clone();
+                destination = townPadLocation.clone();
+            } else {
+                // Town pad is nearest, or as far
+                source = townPadLocation.clone();
+                destination = hallPadLocation.clone();
+            }
+        } else if (hallPadLocation.getWorld().equals(playerLocation.getWorld())) {
+            // Town pad location is in another world, so must be further away
+            source = hallPadLocation;
+            destination = townPadLocation;
         } else {
-            // Town pad is nearest, or as far
-            source = townPadLocation.clone();
-            destination = hallPadLocation.clone();
+            // Hall pad location is in another world.
+            source = townPadLocation;
+            destination = hallPadLocation;
         }
         // Make it as transparent as possible
         destination.setPitch(playerLocation.getPitch());

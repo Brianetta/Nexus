@@ -98,7 +98,7 @@ public class Nexus extends JavaPlugin {
     public void lock(String player) {
         Cooldown.put(player, true);
         // Schedule unlock by "delay" seconds
-        getServer().getScheduler().scheduleSyncDelayedTask(this, new Unlock(this,player),10 * getConfig().getLong("delay"));
+        getServer().getScheduler().scheduleSyncDelayedTask(this, new Unlock(this,player),10 * getConfig().getLong("cooldown"));
     }
 
     // List all of the Nexus pairs that have been defined
@@ -136,10 +136,12 @@ public class Nexus extends JavaPlugin {
                                 pair.close();
                             } else if (args[2].equalsIgnoreCase("hall")) {
                                 msgPlayer(player, "Building hall pad for " + args[1]);
-                                NexusHandler pair = new NexusHandler(this,args[1],player);
+                                NexusHandler pair = new NexusHandler(this, args[1], player);
                                 pair.createPad(true);
                                 pair.close();
-                            } else msgPlayer(player, "You must specify a name, followed by either the word \"hall\" or the word \"town\"");
+                            } else {
+                                msgPlayer(player, "You must specify a name, followed by either the word \"hall\" or the word \"town\"");
+                            }
                         }
                     } else {
                         msgPlayer(player, "You don't have permission to build a Nexus pad");
@@ -150,33 +152,60 @@ public class Nexus extends JavaPlugin {
                             msgPlayer(player, "Destroying both pads for " + args[1]);
                             NexusHandler pair = new NexusHandler(this,args[1],player);
                             pair.remove();
+                        } else {
+                            msgPlayer(player, "You must specify a name");
                         }
-                    } else msgPlayer(player, "You must specify a name");
-                } else if (args[0].equalsIgnoreCase("override") && player.hasPermission("Nexus.create")) {
-                    // Force teleport to other pad, even if they have been physically damaged,
-                    // but only for players who can build them
-                    Location here = player.getLocation().getBlock().getLocation(); // The block is aligned, the player is not
-                    String town = NexusMap.get(String.format("%s %f %f %f",
-                            here.getWorld().getName(),
-                            here.getX() + 0.5F,
-                            here.getY() + 0.5F,
-                            here.getZ() + 0.5F));
-                    if (town != null) {
-                        // We're on a pad location!
-                        NexusHandler pair = new NexusHandler(this, town, player);
-                        msgPlayer(player, "Forcing activation of "+town+" Nexus");
-                        // Lock the player against an immediate return
-                        lock(player.getName());
-                        pair.teleportFurthest(true);
                     } else {
-                        msgPlayer(player, "This is not a Nexus pad location");
+                        msgPlayer(player, "You do not have permission to destroy a Nexus");
                     }
-                } else if (args[0].equalsIgnoreCase("list") && player.hasPermission("Nexus.create")) {
-                    listNexus(player);
-                } else if (args[0].equalsIgnoreCase("info") && args.length == 2 && player.hasPermission("Nexus.create")) {
-                    NexusHandler pair = new NexusHandler(this,args[1],player);
-                    pair.longInfo();
-                } else msgPlayer(player,"You must specify a name");
+                } else if (args[0].equalsIgnoreCase("override")) {
+                    if (player.hasPermission("Nexus.create")) {
+                        // Force teleport to other pad, even if they have been physically damaged,
+                        // but only for players who can build them
+                        Location here = player.getLocation().getBlock().getLocation(); // The block is aligned, the player is not
+                        String town = NexusMap.get(String.format("%s %f %f %f",
+                                here.getWorld().getName(),
+                                here.getX() + 0.5F,
+                                here.getY() + 0.5F,
+                                here.getZ() + 0.5F));
+                        if (town != null) {
+                            // We're on a pad location!
+                            NexusHandler pair = new NexusHandler(this, town, player);
+                            msgPlayer(player, "Forcing activation of "+town+" Nexus");
+                            // Lock the player against an immediate return
+                            lock(player.getName());
+                            pair.teleportFurthest(true);
+                        } else {
+                            msgPlayer(player, "This is not a Nexus pad location");
+                        }
+                    } else {
+                        msgPlayer(player, "You do not have permission to override a Nexus");
+                    }
+                } else if (args[0].equalsIgnoreCase("list")) {
+                    if (player.hasPermission("Nexus.create")) {
+                        listNexus(player);
+                    } else {
+                        msgPlayer(player, "You do not have permission to list all Nexus");
+                    }
+                } else if (args[0].equalsIgnoreCase("info")) {
+                    if (player.hasPermission("Nexus.create")) {
+                        if (args.length == 2) {
+                            NexusHandler pair = new NexusHandler(this, args[1], player);
+                            pair.longInfo();
+                        } else {
+                            msgPlayer(player, "you must specify a name");
+                        }
+                    } else {
+                        msgPlayer(player, "You do not have permission to view Nexus details");
+                    }
+                } else if (args[0].equalsIgnoreCase("reload")) {
+                    if (player.hasPermission("Nexus.admin")) {
+                        msgPlayer(player,"Reloading config from disk!");
+                        reloadConfig();
+                    } else {
+                        msgPlayer(player,"You do not have permission to reload the Nexus mod");
+                    }
+                }
             } else return false;
         }
         return true;

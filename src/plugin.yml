@@ -8,16 +8,23 @@ commands:
         usage: |
             /nexus build <town> town
             /nexus build <town> hall
-            /nexus check <town>
+            /nexus destroy <town>
+            /nexus list
+            /nexus info <town>
+            /nexus override
 permissions:
     Nexus.*:
         description: Access to all Nexus commands
         children:
             Nexus.create: true
             Nexus.request: true
+            Nexus.admin: true
     Nexus.create:
         description: Can create and activate Nexus pads
         default: op
     Nexus.request:
         description: Can request a new Nexus pad
+        default: op
+    Nexus.admin:
+        description: Can reload the plugin
         default: op

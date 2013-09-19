@@ -7,6 +7,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 /**
  * Copyright © Brian Ronald
  * 14/09/13
@@ -123,9 +125,9 @@ public class NexusHandler {
         // pressure plate upon it.
         Material padMaterial;
         Block padBlock;
-        if ((player.getItemInHand().getType() != null) && player.getItemInHand().getType().isBlock() && !(player.getItemInHand().getType().isTransparent())) {
-            // The player is holding a block, so let's make the pad with that type.
-            // XXX Need to find a way to exclude blocks that won't take a pressure plate.
+        List <String> allowedBlocks = nexus.getConfig().getStringList("allowedblocks");
+        if ((player.getItemInHand().getType() != null) && allowedBlocks.contains(player.getItemInHand().getType().name())) {
+            // The player is holding a valid block, so let's make the pad with that type.
             padMaterial = player.getItemInHand().getType();
         }
         else {

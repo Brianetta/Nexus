@@ -286,6 +286,15 @@ public class NexusHandler {
         nexus.getServer().getScheduler().scheduleSyncDelayedTask(nexus, new Teleport(town, player, source, destination, override),5);
     }
 
+    public void warpTo() {
+        // Move the player directly to the town end, regardless of location.
+        nexus.lock(player.getName());
+        if (townPadLocation == null)
+            Nexus.msgPlayer(player,"There is no Nexus pad in "+town);
+        else
+            player.teleport(townPadLocation);
+    }
+
     public void close() {
         // Always call this method after you're done creating or renaming a Nexus.
         nexus.getConfig().set("pairs."+town+".hallLocation",serializeLocation(hallPadLocation));

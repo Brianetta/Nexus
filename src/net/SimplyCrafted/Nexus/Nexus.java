@@ -210,7 +210,18 @@ public class Nexus extends JavaPlugin {
                             NexusHandler pair = new NexusHandler(this, args[1], player);
                             pair.longInfo();
                         } else {
-                            msgPlayer(player, "you must specify a name");
+                            msgPlayer(player, "You must specify a name");
+                        }
+                    } else {
+                        msgPlayer(player, "You do not have permission to view Nexus details");
+                    }
+                } else if (args[0].equalsIgnoreCase("warp")) {
+                    if (player.hasPermission("Nexus.create")) {
+                        if (args.length == 2) {
+                            NexusHandler pair = new NexusHandler(this, args[1], player);
+                            pair.warpTo();
+                        } else {
+                            msgPlayer(player, "You must specify a name");
                         }
                     } else {
                         msgPlayer(player, "You do not have permission to view Nexus details");

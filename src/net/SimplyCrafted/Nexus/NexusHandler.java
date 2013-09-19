@@ -1,12 +1,11 @@
 package net.SimplyCrafted.Nexus;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
 /**
  * Copyright © Brian Ronald
@@ -32,24 +31,11 @@ public class NexusHandler {
     private final Nexus nexus; // A Nexus class instance is required for config
     private Location hallPadLocation, townPadLocation;
     private boolean established = false; // set true when both Locations are defined
-    private boolean paid = false; // flag to show whether this Nexus has been paid for
     private String town;
     private Player player;
 
-    public Location getHallPadLocation() {
-        return hallPadLocation;
-    }
-
-    public Location getTownPadLocation() {
-        return townPadLocation;
-    }
-
     public boolean isEstablished() {
         return established;
-    }
-
-    public boolean isPaid () {
-        return paid;
     }
 
     public String getName () {
@@ -211,15 +197,13 @@ public class NexusHandler {
 
     // Schedulable runnable that activates the teleport
     private class Teleport implements Runnable {
-        private final Nexus nexus;
         private final String town;
         private final Player player;
         private final Location destination;
         private final Location source;
         private final boolean override;
 
-        Teleport (Nexus nexus, String town, Player player, Location source, Location destination, boolean override) {
-            this.nexus = nexus;
+        Teleport (String town, Player player, Location source, Location destination, boolean override) {
             this.town = town;
             this.player = player;
             this.destination = destination;
@@ -230,17 +214,33 @@ public class NexusHandler {
         public void run() {
             source.setY(source.getY() - 0.5); // Bring it to ground level
             if (!(destination.getBlock().getType() == Material.STONE_PLATE || override)) {
-                nexus.msgPlayer(player,"Traveling by "+town+" Nexus pad disabled; pressure plate is missing at other end");
+                Nexus.msgPlayer(player,"Traveling by "+town+" Nexus pad disabled; pressure plate is missing at other end");
                 return;
             }
             if (player.getLocation().distance(source) < 0.5) {
                 // Player's on the pad
                 player.teleport(destination);
-                nexus.msgPlayer(player,"Traveled using the "+town+" Nexus pad");
+                Nexus.msgPlayer(player,"Traveled using the "+town+" Nexus pad");
             } else {
-                nexus.msgPlayer(player,"Nexus transport failed; "+player.getName()+" wasn't standing in the middle");
+                Nexus.msgPlayer(player, "Nexus transport failed; " + player.getName() + " wasn't standing in the middle");
             }
         }
+    }
+
+    public void shortInfo() {
+        Nexus.msgPlayer(player, String.format("%s (%s)", ChatColor.WHITE + getName() + ChatColor.GRAY, isEstablished() ? "Established" : "Incomplete"));
+    }
+
+    public void longInfo() {
+        Nexus.msgPlayer(player, ChatColor.GREEN + "Name: " + ChatColor.WHITE + town);
+        if (hallPadLocation != null)
+            Nexus.msgPlayer(player, ChatColor.GREEN + "Hall: " + ChatColor.GRAY + String.format("%1.0f, %1.0f (height %1.0f) in \"%s\" world", hallPadLocation.getX(), hallPadLocation.getZ(), hallPadLocation.getY(), hallPadLocation.getWorld().getName()));
+        else
+            Nexus.msgPlayer(player, ChatColor.GREEN + "Hall: " + ChatColor.GRAY + "Not yet defined");
+        if (townPadLocation != null)
+            Nexus.msgPlayer(player, ChatColor.GREEN + "Town: " + ChatColor.GRAY + String.format("%1.0f, %1.0f (height %1.0f) in \"%s\" world", townPadLocation.getX(), townPadLocation.getZ(), townPadLocation.getY(), townPadLocation.getWorld().getName()));
+        else
+            Nexus.msgPlayer(player, ChatColor.GREEN + "Town: " + ChatColor.GRAY + "Not yet defined");
     }
 
     public void teleportFurthest(boolean override) {
@@ -272,7 +272,7 @@ public class NexusHandler {
         destination.setPitch(playerLocation.getPitch());
 
         // Go!  Magic number 5 is about how many ticks it takes a walking player to get onto the pad. Trial and error.
-        nexus.getServer().getScheduler().scheduleSyncDelayedTask(nexus, new Teleport(nexus, town, player, source, destination, override),5);
+        nexus.getServer().getScheduler().scheduleSyncDelayedTask(nexus, new Teleport(town, player, source, destination, override),5);
     }
 
     public void close() {

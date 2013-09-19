@@ -5,7 +5,6 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -112,7 +111,7 @@ public class Nexus extends JavaPlugin {
             if (configKeys.startsWith("pairs.") && configKeys.lastIndexOf(".") == 5) {
                 // configKeys.substring(6) is a town name
                 pair = new NexusHandler(this,configKeys.substring(6),player);
-                msgPlayer(player,String.format("%s (%s)",ChatColor.WHITE + pair.getName() + ChatColor.GRAY,pair.isEstablished()?"Established":"Incomplete"));
+                pair.shortInfo();
             }
         }
     }
@@ -140,7 +139,7 @@ public class Nexus extends JavaPlugin {
                                 NexusHandler pair = new NexusHandler(this,args[1],player);
                                 pair.createPad(true);
                                 pair.close();
-                            }
+                            } else msgPlayer(player, "You must specify a name, followed by either the word \"hall\" or the word \"town\"");
                         }
                     } else {
                         msgPlayer(player, "You don't have permission to build a Nexus pad");
@@ -152,7 +151,7 @@ public class Nexus extends JavaPlugin {
                             NexusHandler pair = new NexusHandler(this,args[1],player);
                             pair.remove();
                         }
-                    }
+                    } else msgPlayer(player, "You must specify a name");
                 } else if (args[0].equalsIgnoreCase("override") && player.hasPermission("Nexus.create")) {
                     // Force teleport to other pad, even if they have been physically damaged,
                     // but only for players who can build them
@@ -174,7 +173,10 @@ public class Nexus extends JavaPlugin {
                     }
                 } else if (args[0].equalsIgnoreCase("list") && player.hasPermission("Nexus.create")) {
                     listNexus(player);
-                }
+                } else if (args[0].equalsIgnoreCase("info") && args.length == 2 && player.hasPermission("Nexus.create")) {
+                    NexusHandler pair = new NexusHandler(this,args[1],player);
+                    pair.longInfo();
+                } else msgPlayer(player,"You must specify a name");
             } else return false;
         }
         return true;

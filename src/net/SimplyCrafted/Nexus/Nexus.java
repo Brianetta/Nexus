@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * Copyright © Brian Ronald
@@ -106,20 +106,30 @@ public class Nexus extends JavaPlugin {
     }
 
     // List all of the Nexus pairs that have been defined
-    public void listNexus (Player player) {
+    public void listNexus (Player player, int page) {
+        final int linesPerPage=9; // Pagination constant
         NexusHandler pair;
-        for (String configKeys : getConfig().getKeys(true)) {
+        SortedSet<String> sortedKeys=new TreeSet<String>(getConfig().getKeys(true));
+        int counter=0; // I'm so sorry, please forgive me. )-:
+        for (String configKeys : sortedKeys) {
             // Magic numbers:
             // 5 is the position of the '.' in "pairs."
             // 6 is the position of the next character.
             if (configKeys.startsWith("pairs.") && configKeys.lastIndexOf(".") == 5) {
-                // configKeys.substring(6) is a town name
-                pair = new NexusHandler(this,configKeys.substring(6),player);
-                pair.shortInfo();
+                if (counter >= (page-1)*linesPerPage && counter < page*linesPerPage) {
+                    // configKeys.substring(6) is a town name
+                    pair = new NexusHandler(this,configKeys.substring(6),player);
+                    pair.shortInfo();
+                }
+                counter++; // I know, this hurts
             }
         }
+        msgPlayer(player,String.format("Page %d of %d",page,(counter/linesPerPage)+1));
     }
 
+    public void listNexus (Player player) {
+        listNexus(player,1);
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -187,7 +197,10 @@ public class Nexus extends JavaPlugin {
                     }
                 } else if (args[0].equalsIgnoreCase("list")) {
                     if (player.hasPermission("Nexus.create")) {
-                        listNexus(player);
+                        if (args.length == 1)
+                            listNexus(player);
+                        else
+                            listNexus(player, Integer.parseInt(args[1]));
                     } else {
                         msgPlayer(player, "You do not have permission to list all Nexus");
                     }

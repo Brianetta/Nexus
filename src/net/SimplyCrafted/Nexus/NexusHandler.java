@@ -107,12 +107,12 @@ public class NexusHandler {
         String tempLoc;
         boolean establishFlag = false;
         tempLoc = nexus.getConfig().getString("pairs." + name + ".hallLocation");
-        if (tempLoc != null) {
+        if (tempLoc != null && !tempLoc.equalsIgnoreCase("null")) {
             hallPadLocation = unserializeLocation(tempLoc);
             establishFlag = true;
         }
         tempLoc = nexus.getConfig().getString("pairs." + name + ".townLocation");
-        if (tempLoc != null) {
+        if (tempLoc != null && !tempLoc.equalsIgnoreCase("null")) {
             townPadLocation = unserializeLocation(tempLoc);
             if (establishFlag) established = true;
         }

@@ -102,6 +102,22 @@ public class Nexus extends JavaPlugin {
         getServer().getScheduler().scheduleSyncDelayedTask(this, new Unlock(this,player),10 * getConfig().getLong("delay"));
     }
 
+    // List all of the Nexus pairs that have been defined
+    public void listNexus (Player player) {
+        NexusHandler pair;
+        for (String configKeys : getConfig().getKeys(true)) {
+            // Magic numbers:
+            // 5 is the position of the '.' in "pairs."
+            // 6 is the position of the next character.
+            if (configKeys.startsWith("pairs.") && configKeys.lastIndexOf(".") == 5) {
+                // configKeys.substring(6) is a town name
+                pair = new NexusHandler(this,configKeys.substring(6),player);
+                msgPlayer(player,String.format("%s (%s)",ChatColor.WHITE + pair.getName() + ChatColor.GRAY,pair.isEstablished()?"Established":"Incomplete"));
+            }
+        }
+    }
+
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("Nexus")) {
@@ -156,7 +172,8 @@ public class Nexus extends JavaPlugin {
                     } else {
                         msgPlayer(player, "This is not a Nexus pad location");
                     }
-
+                } else if (args[0].equalsIgnoreCase("list") && player.hasPermission("Nexus.create")) {
+                    listNexus(player);
                 }
             } else return false;
         }

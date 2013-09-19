@@ -44,6 +44,15 @@ public class NexusHandler {
         return town;
     }
 
+    public void rename (String name) {
+        Nexus.msgPlayer(player,"Renaming Nexus from " +town+ " to " +name);
+        if (townPadLocation != null) nexus.NexusMap.put(getHashTownLocation(), name);
+        if (hallPadLocation != null) nexus.NexusMap.put(getHashHallLocation(), name);
+        nexus.getConfig().set("pairs."+name,nexus.getConfig().get("pairs."+town));
+        nexus.getConfig().set("pairs."+town,null);
+        town = name;
+    }
+
     private String serializeLocation (Location location) {
         if (location == null) return "null";
         return String.format("%s %f %f %f %f", location.getWorld().getName(), location.getX(), location.getY(), location.getZ(), location.getYaw());
@@ -278,7 +287,7 @@ public class NexusHandler {
     }
 
     public void close() {
-        // Always call this method after you're done creating a Nexus.
+        // Always call this method after you're done creating or renaming a Nexus.
         nexus.getConfig().set("pairs."+town+".hallLocation",serializeLocation(hallPadLocation));
         nexus.getConfig().set("pairs."+town+".townLocation",serializeLocation(townPadLocation));
     }

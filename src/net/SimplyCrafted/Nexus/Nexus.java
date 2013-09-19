@@ -42,6 +42,12 @@ public class Nexus extends JavaPlugin {
     @Override
     public void onEnable() {
         saveDefaultConfig();
+        populateNexusMap();
+        // Register the handler that detects the player treading on a pad
+        getServer().getPluginManager().registerEvents(new NexusListener(this), this);
+    }
+
+    private void populateNexusMap() {
         NexusHandler nexusHandler;
         for (String configKeys : getConfig().getKeys(true)) {
             // Magic numbers:
@@ -56,8 +62,6 @@ public class Nexus extends JavaPlugin {
                 getLogger().info("Loaded and hashed Nexus for: " + nexusHandler.getName());
             }
         }
-        // Register the handler that detects the player treading on a pad
-        getServer().getPluginManager().registerEvents(new NexusListener(this), this);
     }
 
     @Override
@@ -202,8 +206,18 @@ public class Nexus extends JavaPlugin {
                     if (player.hasPermission("Nexus.admin")) {
                         msgPlayer(player,"Reloading config from disk!");
                         reloadConfig();
+                        NexusMap.clear();
+                        populateNexusMap();
                     } else {
                         msgPlayer(player,"You do not have permission to reload the Nexus mod");
+                    }
+                } else if (args[0].equalsIgnoreCase("rename")) {
+                    if (player.hasPermission("Nexus.create")) {
+                        if (args.length == 3) {
+                            NexusHandler pair = new NexusHandler(this,args[1],player);
+                            pair.rename(args[2]);
+                            pair.close();
+                        }
                     }
                 }
             } else return false;

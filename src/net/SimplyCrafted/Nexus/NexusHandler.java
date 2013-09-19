@@ -222,7 +222,7 @@ public class NexusHandler {
                 player.teleport(destination);
                 Nexus.msgPlayer(player,"Traveled using the "+town+" Nexus pad");
             } else {
-                Nexus.msgPlayer(player, "Nexus transport failed; " + player.getName() + " wasn't standing in the middle");
+                Nexus.msgPlayer(player, "Nexus transport failed; you weren't standing in the middle");
             }
         }
     }

@@ -12,6 +12,7 @@ commands:
             /nexus list
             /nexus info <town>
             /nexus override
+            /nexus reload
 permissions:
     Nexus.*:
         description: Access to all Nexus commands

@@ -43,8 +43,18 @@ public class Nexus extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         populateNexusMap();
+        String chatcolor;
+        Boolean colormatch = false;
+
         // Register the handler that detects the player treading on a pad
         getServer().getPluginManager().registerEvents(new NexusListener(this), this);
+
+        // Error checking: Make sure that the config contains a valid color
+        chatcolor = getConfig().getString("chatcolor");
+        for (ChatColor testcolor : ChatColor.values()) {
+            if (testcolor.toString().equals(chatcolor)) colormatch = true;
+        }
+        if (!colormatch) getConfig().set("chatcolor", "GOLD"); // Default value, in case the config contains junk
     }
 
     private void populateNexusMap() {
@@ -74,8 +84,8 @@ public class Nexus extends JavaPlugin {
         PlayerInteractEvent.getHandlerList().unregister(this);
     }
 
-    public static void msgPlayer(Player player,String msg) {
-        if (!msg.isEmpty()) player.sendMessage(ChatColor.GOLD + "[Nexus] " + ChatColor.GRAY + msg.replace('_',' '));
+    public void msgPlayer(Player player,String msg) {
+        if (!msg.isEmpty()) player.sendMessage(ChatColor.valueOf(getConfig().getString("chatcolor")) + "[Nexus] " + ChatColor.GRAY + msg.replace('_',' '));
     }
 
     // Check whether player has just been teleported

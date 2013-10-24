@@ -45,7 +45,7 @@ public class NexusHandler {
     }
 
     public void rename (String name) {
-        Nexus.msgPlayer(player,"Renaming Nexus from " +town+ " to " +name);
+        nexus.msgPlayer(player,"Renaming Nexus from " +town+ " to " +name);
         if (townPadLocation != null) nexus.NexusMap.put(getHashTownLocation(), name);
         if (hallPadLocation != null) nexus.NexusMap.put(getHashHallLocation(), name);
         nexus.getConfig().set("pairs."+name,nexus.getConfig().get("pairs."+town));
@@ -182,9 +182,9 @@ public class NexusHandler {
         if (townPadLocation != null && hallPadLocation != null) {
             established = true;
             if (hallPadLocation.getWorld().equals(townPadLocation.getWorld()))
-                Nexus.msgPlayer(player, String.format("Nexus created for %s; distance is %.1fm", town, townPadLocation.distance(hallPadLocation)));
+                nexus.msgPlayer(player, String.format("Nexus created for %s; distance is %.1fm", town, townPadLocation.distance(hallPadLocation)));
             else
-                Nexus.msgPlayer(player, String.format("Nexus created for %s; Nexus is trans-world", town));
+                nexus.msgPlayer(player, String.format("Nexus created for %s; Nexus is trans-world", town));
             // Hash the new locations
             nexus.NexusMap.put(getHashHallLocation(),town);
             nexus.NexusMap.put(getHashTownLocation(),town);
@@ -225,33 +225,33 @@ public class NexusHandler {
         public void run() {
             source.setY(source.getY() - 0.5); // Bring it to ground level
             if (!(destination.getBlock().getType() == Material.STONE_PLATE || override)) {
-                Nexus.msgPlayer(player,"Traveling by "+town+" Nexus pad disabled; pressure plate is missing at other end");
+                nexus.msgPlayer(player,"Traveling by "+town+" Nexus pad disabled; pressure plate is missing at other end");
                 return;
             }
             if (player.getLocation().distance(source) < 0.5) {
                 // Player's on the pad
                 player.teleport(destination);
-                Nexus.msgPlayer(player,"Traveled using the "+town+" Nexus pad");
+                nexus.msgPlayer(player,"Traveled using the "+town+" Nexus pad");
             } else {
-                Nexus.msgPlayer(player, "Nexus transport failed; you weren't standing in the middle");
+                nexus.msgPlayer(player, "Nexus transport failed; you weren't standing in the middle");
             }
         }
     }
 
     public void shortInfo() {
-        Nexus.msgPlayer(player, String.format("%s (%s)", ChatColor.WHITE + getName() + ChatColor.GRAY, isEstablished() ? "Established" : "Incomplete"));
+        nexus.msgPlayer(player, String.format("%s (%s)", ChatColor.WHITE + getName() + ChatColor.GRAY, isEstablished() ? "Established" : "Incomplete"));
     }
 
     public void longInfo() {
-        Nexus.msgPlayer(player, ChatColor.GREEN + "Name: " + ChatColor.WHITE + town);
+        nexus.msgPlayer(player, ChatColor.GREEN + "Name: " + ChatColor.WHITE + town);
         if (hallPadLocation != null)
-            Nexus.msgPlayer(player, ChatColor.GREEN + "Hall: " + ChatColor.GRAY + String.format("%1.0f, %1.0f (height %1.0f) in \"%s\" world", hallPadLocation.getX(), hallPadLocation.getZ(), hallPadLocation.getY(), hallPadLocation.getWorld().getName()));
+            nexus.msgPlayer(player, ChatColor.GREEN + "Hall: " + ChatColor.GRAY + String.format("%1.0f, %1.0f (height %1.0f) in \"%s\" world", hallPadLocation.getX(), hallPadLocation.getZ(), hallPadLocation.getY(), hallPadLocation.getWorld().getName()));
         else
-            Nexus.msgPlayer(player, ChatColor.GREEN + "Hall: " + ChatColor.GRAY + "Not yet defined");
+            nexus.msgPlayer(player, ChatColor.GREEN + "Hall: " + ChatColor.GRAY + "Not yet defined");
         if (townPadLocation != null)
-            Nexus.msgPlayer(player, ChatColor.GREEN + "Town: " + ChatColor.GRAY + String.format("%1.0f, %1.0f (height %1.0f) in \"%s\" world", townPadLocation.getX(), townPadLocation.getZ(), townPadLocation.getY(), townPadLocation.getWorld().getName()));
+            nexus.msgPlayer(player, ChatColor.GREEN + "Town: " + ChatColor.GRAY + String.format("%1.0f, %1.0f (height %1.0f) in \"%s\" world", townPadLocation.getX(), townPadLocation.getZ(), townPadLocation.getY(), townPadLocation.getWorld().getName()));
         else
-            Nexus.msgPlayer(player, ChatColor.GREEN + "Town: " + ChatColor.GRAY + "Not yet defined");
+            nexus.msgPlayer(player, ChatColor.GREEN + "Town: " + ChatColor.GRAY + "Not yet defined");
     }
 
     public void teleportFurthest(boolean override) {
@@ -290,7 +290,7 @@ public class NexusHandler {
         // Move the player directly to the town end, regardless of location.
         nexus.lock(player.getName());
         if (townPadLocation == null)
-            Nexus.msgPlayer(player,"There is no Nexus pad in "+town);
+            nexus.msgPlayer(player,"There is no Nexus pad in "+town);
         else
             player.teleport(townPadLocation);
     }

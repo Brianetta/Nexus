@@ -85,7 +85,7 @@ public class Nexus extends JavaPlugin {
     }
 
     public void msgPlayer(Player player,String msg) {
-        if (!msg.isEmpty()) player.sendMessage(ChatColor.valueOf(getConfig().getString("chatcolor")) + "[Nexus] " + ChatColor.GRAY + msg.replace('_',' '));
+        if (!msg.isEmpty()) player.sendMessage(ChatColor.valueOf(getConfig().getString("chatcolor")) + "[" + this.getName() + "] " + ChatColor.GRAY + msg.replace('_',' '));
     }
 
     // Check whether player has just been teleported

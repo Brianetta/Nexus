@@ -2,13 +2,28 @@ chatcolor: GOLD
 padmaterial: LAPIS_BLOCK
 cooldown: 3
 messages:
-    nopermtobuild:   You don't have permission to build a Nexus pad
-    nopermtodestroy: You do not have permission to destroy a Nexus
-    forcing:         Forcing activation of %s Nexus
-    nopadhere:       This is not a Nexus pad location
-    buildingtown:    Building town pad for %s
-    buildinghall:    Building hall pad for %s
-    destroying:      Destroying both pads for %s
+    nopermtobuild:    You don't have permission to build a Nexus pad
+    nopermtodestroy:  You do not have permission to destroy a Nexus
+    nopermtooverride: You do not have permission to override a Nexus
+    nopermtolist:     You do not have permission to list all Nexus
+    nopermtoview:     You do not have permission to view Nexus details
+    nopermtoreload:   You do not have permission to reload the plugin
+    nopermtorename:   You do not have permission to rename a Nexus
+    nopermtowarp:     You do not have permission to teleport to a Nexus
+    nosuchnexus:      There is no Nexus of that name
+    renaming:         Renaming Nexus from %s to %s
+    forcing:          Forcing activation of %s Nexus
+    nopadhere:        This is not a Nexus pad location
+    disabled:         Traveling by %s Nexus pad disabled; pressure plate is missing at other end
+    traveling:        Traveled using the %s Nexus pad
+    aborted:          Nexus transport failed; you left the pad
+    buildingtown:     Building town pad for %s
+    buildinghall:     Building hall pad for %s
+    createdinworld:   Nexus created for %s; distance is %.1fm
+    createdexworld:   Nexus created for %s; Nexus is trans-world
+    destroying:       Destroying both pads for %s
+    specifyname:      You must specify a name
+    reloading:        Reloading config from disk!
 
 allowedblocks:
   - STONE

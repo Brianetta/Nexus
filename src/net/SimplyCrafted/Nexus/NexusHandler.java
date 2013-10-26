@@ -45,9 +45,20 @@ public class NexusHandler {
     }
 
     public void rename (String name) {
-        nexus.msgPlayer(player,"Renaming Nexus from " +town+ " to " +name);
-        if (townPadLocation != null) nexus.NexusMap.put(getHashTownLocation(), name);
-        if (hallPadLocation != null) nexus.NexusMap.put(getHashHallLocation(), name);
+        Boolean doIActuallyExist = false;
+        if (townPadLocation != null) {
+            nexus.NexusMap.put(getHashTownLocation(), name);
+            doIActuallyExist = true;
+        }
+        if (hallPadLocation != null) {
+            nexus.NexusMap.put(getHashHallLocation(), name);
+            doIActuallyExist = true;
+        }
+        if (doIActuallyExist) {
+            nexus.msgPlayer(player, String.format(nexus.getConfig().getString("messages.renaming"), town, name));
+        } else {
+            nexus.msgPlayer(player, nexus.getConfig().getString("messages.nosuchnexus"));
+        }
         nexus.getConfig().set("pairs."+name,nexus.getConfig().get("pairs."+town));
         nexus.getConfig().set("pairs."+town,null);
         town = name;
@@ -182,9 +193,9 @@ public class NexusHandler {
         if (townPadLocation != null && hallPadLocation != null) {
             established = true;
             if (hallPadLocation.getWorld().equals(townPadLocation.getWorld()))
-                nexus.msgPlayer(player, String.format("Nexus created for %s; distance is %.1fm", town, townPadLocation.distance(hallPadLocation)));
+                nexus.msgPlayer(player, String.format(nexus.getConfig().getString("messages.createdinworld"), town, townPadLocation.distance(hallPadLocation)));
             else
-                nexus.msgPlayer(player, String.format("Nexus created for %s; Nexus is trans-world", town));
+                nexus.msgPlayer(player, String.format(nexus.getConfig().getString("messages.createdexworld"), town));
             // Hash the new locations
             nexus.NexusMap.put(getHashHallLocation(),town);
             nexus.NexusMap.put(getHashTownLocation(),town);
@@ -225,15 +236,15 @@ public class NexusHandler {
         public void run() {
             source.setY(source.getY() - 0.5); // Bring it to ground level
             if (!(destination.getBlock().getType() == Material.STONE_PLATE || override)) {
-                nexus.msgPlayer(player,"Traveling by "+town+" Nexus pad disabled; pressure plate is missing at other end");
+                nexus.msgPlayer(player,String.format(nexus.getConfig().getString("messages.disabled"),town));
                 return;
             }
             if (player.getLocation().distance(source) < 0.5) {
                 // Player's on the pad
                 player.teleport(destination);
-                nexus.msgPlayer(player,"Traveled using the "+town+" Nexus pad");
+                nexus.msgPlayer(player,String.format(nexus.getConfig().getString("messages.traveling"),town));
             } else {
-                nexus.msgPlayer(player, "Nexus transport failed; you weren't standing in the middle");
+                nexus.msgPlayer(player, nexus.getConfig().getString("messages.aborted"));
             }
         }
     }
@@ -290,7 +301,7 @@ public class NexusHandler {
         // Move the player directly to the town end, regardless of location.
         nexus.lock(player.getName());
         if (townPadLocation == null)
-            nexus.msgPlayer(player,"There is no Nexus pad in "+town);
+            nexus.msgPlayer(player, nexus.getConfig().getString("messages.nosuchnexus"));
         else
             player.teleport(townPadLocation);
     }

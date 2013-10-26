@@ -18,6 +18,7 @@ permissions:
     Nexus.*:
         description: Access to all Nexus commands
         children:
+            Nexus.warp: true
             Nexus.create: true
             Nexus.request: true
             Nexus.admin: true
@@ -29,4 +30,7 @@ permissions:
         default: op
     Nexus.admin:
         description: Can reload the plugin
+        default: op
+    Nexus.warp:
+        description: Can teleport to a Nexus pad
         default: op

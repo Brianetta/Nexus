@@ -154,12 +154,12 @@ public class Nexus extends JavaPlugin {
                     if (player.hasPermission("Nexus.create")) {
                         if (args.length == 3) {
                             if (args[2].equalsIgnoreCase("town")) {
-                                msgPlayer(player, String.format(getConfig().getString("messages.buildingtown", args[1])));
+                                msgPlayer(player, String.format(getConfig().getString("messages.buildingtown"), args[1]));
                                 NexusHandler pair = new NexusHandler(this,args[1],player);
                                 pair.createPad(false);
                                 pair.close();
                             } else if (args[2].equalsIgnoreCase("hall")) {
-                                msgPlayer(player, String.format(getConfig().getString("messages.buildinghall", args[1])));
+                                msgPlayer(player, String.format(getConfig().getString("messages.buildinghall"), args[1]));
                                 NexusHandler pair = new NexusHandler(this, args[1], player);
                                 pair.createPad(true);
                                 pair.close();
@@ -177,7 +177,7 @@ public class Nexus extends JavaPlugin {
                             NexusHandler pair = new NexusHandler(this,args[1],player);
                             pair.remove();
                         } else {
-                            msgPlayer(player, "You must specify a name");
+                            msgPlayer(player, getConfig().getString("messages.specifyname"));
                         }
                     } else {
                         msgPlayer(player, getConfig().getString("messages.nopermtodestroy"));
@@ -203,7 +203,7 @@ public class Nexus extends JavaPlugin {
                             msgPlayer(player, getConfig().getString("messages.nopadhere"));
                         }
                     } else {
-                        msgPlayer(player, "You do not have permission to override a Nexus");
+                        msgPlayer(player, getConfig().getString("messages.nopermtooverride"));
                     }
                 } else if (args[0].equalsIgnoreCase("list")) {
                     if (player.hasPermission("Nexus.create")) {
@@ -212,7 +212,7 @@ public class Nexus extends JavaPlugin {
                         else
                             listNexus(player, Integer.parseInt(args[1]));
                     } else {
-                        msgPlayer(player, "You do not have permission to list all Nexus");
+                        msgPlayer(player, getConfig().getString("messages.nopermtolist"));
                     }
                 } else if (args[0].equalsIgnoreCase("info")) {
                     if (player.hasPermission("Nexus.create")) {
@@ -220,30 +220,30 @@ public class Nexus extends JavaPlugin {
                             NexusHandler pair = new NexusHandler(this, args[1], player);
                             pair.longInfo();
                         } else {
-                            msgPlayer(player, "You must specify a name");
+                            msgPlayer(player, getConfig().getString("messages.specifyname"));
                         }
                     } else {
-                        msgPlayer(player, "You do not have permission to view Nexus details");
+                        msgPlayer(player, getConfig().getString("messages.nopermtoview"));
                     }
                 } else if (args[0].equalsIgnoreCase("warp")) {
-                    if (player.hasPermission("Nexus.create")) {
+                    if (player.hasPermission("Nexus.warp")) {
                         if (args.length == 2) {
                             NexusHandler pair = new NexusHandler(this, args[1], player);
                             pair.warpTo();
                         } else {
-                            msgPlayer(player, "You must specify a name");
+                            msgPlayer(player, getConfig().getString("messages.specifyname"));
                         }
                     } else {
-                        msgPlayer(player, "You do not have permission to view Nexus details");
+                        msgPlayer(player, getConfig().getString("messages.nopermtowarp"));
                     }
                 } else if (args[0].equalsIgnoreCase("reload")) {
                     if (player.hasPermission("Nexus.admin")) {
-                        msgPlayer(player,"Reloading config from disk!");
+                        msgPlayer(player, getConfig().getString("messages.reloading"));
                         reloadConfig();
                         NexusMap.clear();
                         populateNexusMap();
                     } else {
-                        msgPlayer(player,"You do not have permission to reload the Nexus mod");
+                        msgPlayer(player, getConfig().getString("messages.nopermtoreload"));
                     }
                 } else if (args[0].equalsIgnoreCase("rename")) {
                     if (player.hasPermission("Nexus.create")) {
@@ -252,6 +252,8 @@ public class Nexus extends JavaPlugin {
                             pair.rename(args[2]);
                             pair.close();
                         }
+                    } else {
+                        msgPlayer(player, getConfig().getString("messages.nopermtorename"));
                     }
                 }
             } else return false;

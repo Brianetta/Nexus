@@ -12,6 +12,7 @@ commands:
             /nexus list
             /nexus info <town>
             /nexus override
+            /nexus warp
             /nexus reload
 permissions:
     Nexus.*:

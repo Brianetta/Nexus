@@ -154,12 +154,12 @@ public class Nexus extends JavaPlugin {
                     if (player.hasPermission("Nexus.create")) {
                         if (args.length == 3) {
                             if (args[2].equalsIgnoreCase("town")) {
-                                msgPlayer(player, "Building town pad for " + args[1]);
+                                msgPlayer(player, String.format(getConfig().getString("messages.buildingtown", args[1])));
                                 NexusHandler pair = new NexusHandler(this,args[1],player);
                                 pair.createPad(false);
                                 pair.close();
                             } else if (args[2].equalsIgnoreCase("hall")) {
-                                msgPlayer(player, "Building hall pad for " + args[1]);
+                                msgPlayer(player, String.format(getConfig().getString("messages.buildinghall", args[1])));
                                 NexusHandler pair = new NexusHandler(this, args[1], player);
                                 pair.createPad(true);
                                 pair.close();
@@ -168,19 +168,19 @@ public class Nexus extends JavaPlugin {
                             }
                         }
                     } else {
-                        msgPlayer(player, "You don't have permission to build a Nexus pad");
+                        msgPlayer(player, getConfig().getString("messages.nopermtobuild"));
                     }
                 } else if (args[0].equalsIgnoreCase("destroy")) {
                     if (player.hasPermission("Nexus.create")) {
                         if (args.length == 2) {
-                            msgPlayer(player, "Destroying both pads for " + args[1]);
+                            msgPlayer(player, String.format(getConfig().getString("messages.destroying"), args[1]));
                             NexusHandler pair = new NexusHandler(this,args[1],player);
                             pair.remove();
                         } else {
                             msgPlayer(player, "You must specify a name");
                         }
                     } else {
-                        msgPlayer(player, "You do not have permission to destroy a Nexus");
+                        msgPlayer(player, getConfig().getString("messages.nopermtodestroy"));
                     }
                 } else if (args[0].equalsIgnoreCase("override")) {
                     if (player.hasPermission("Nexus.create")) {
@@ -195,12 +195,12 @@ public class Nexus extends JavaPlugin {
                         if (town != null) {
                             // We're on a pad location!
                             NexusHandler pair = new NexusHandler(this, town, player);
-                            msgPlayer(player, "Forcing activation of "+town+" Nexus");
+                            msgPlayer(player, String.format(getConfig().getString("messages.forcing"),town));
                             // Lock the player against an immediate return
                             lock(player.getName());
                             pair.teleportFurthest(true);
                         } else {
-                            msgPlayer(player, "This is not a Nexus pad location");
+                            msgPlayer(player, getConfig().getString("messages.nopadhere"));
                         }
                     } else {
                         msgPlayer(player, "You do not have permission to override a Nexus");

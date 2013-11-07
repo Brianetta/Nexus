@@ -1,6 +1,7 @@
 package net.SimplyCrafted.Nexus;
 
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -152,6 +153,18 @@ public class NexusHandler {
         if ((player.getItemInHand().getType() != null) && allowedBlocks.contains(player.getItemInHand().getType().name())) {
             // The player is holding a valid block, so let's make the pad with that type.
             padMaterial = player.getItemInHand().getType();
+            // If the player is not in creative mode, take the block off them.
+            if (!(player.getGameMode().equals(GameMode.CREATIVE))) {
+                int stackHeight = player.getItemInHand().getAmount();
+                // If there's more than one item in the player's hand,
+                if (stackHeight > 1 ) {
+                    // take one away
+                    player.getItemInHand().setAmount(stackHeight-1);
+                } else {
+                    // otherwise take the only one away.
+                    player.getInventory().remove(player.getItemInHand());
+                }
+            }
         }
         else {
             // The player is not holding an opaque block, so get the configured material
@@ -160,8 +173,10 @@ public class NexusHandler {
         }
         Location locationFromPlayer = createLocationFromPlayer();
         padBlock = player.getWorld().getBlockAt(locationFromPlayer);
-        // Place the block below the player
-        padBlock.getRelative(BlockFace.DOWN).setType(padMaterial);
+        // Break & place the block below the player
+        Block underBlock = padBlock.getRelative(BlockFace.DOWN);
+        underBlock.breakNaturally();
+        underBlock.setType(padMaterial);
         // Place the pressure plate on the block
         padBlock.setType(plateMaterial);
         return locationFromPlayer;

@@ -1,5 +1,6 @@
 chatcolor: GOLD
 padmaterial: LAPIS_BLOCK
+platematerial: STONE_PLATE
 cooldown: 3
 messages:
     # If a message is the word "empty" (unquoted) it will not be displayed.

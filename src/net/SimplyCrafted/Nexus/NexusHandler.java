@@ -35,6 +35,7 @@ public class NexusHandler {
     private boolean established = false; // set true when both Locations are defined
     private String town;
     private Player player;
+    Material plateMaterial;
 
     public boolean isEstablished() {
         return established;
@@ -124,6 +125,8 @@ public class NexusHandler {
             townPadLocation = unserializeLocation(tempLoc);
             if (establishFlag) established = true;
         }
+        plateMaterial = Material.getMaterial(nexus.getConfig().getString("platematerial"));
+        if (plateMaterial == null) plateMaterial = Material.STONE_PLATE;
     }
 
     private Location createLocationFromPlayer () {
@@ -160,8 +163,15 @@ public class NexusHandler {
         // Place the block below the player
         padBlock.getRelative(BlockFace.DOWN).setType(padMaterial);
         // Place the pressure plate on the block
-        padBlock.setType(Material.STONE_PLATE);
+        padBlock.setType(plateMaterial);
         return locationFromPlayer;
+    }
+
+    private void breakPad (Location location) {
+        if (location.getBlock().getState().getType() == plateMaterial)
+        {
+            location.getBlock().breakNaturally();
+        }
     }
 
     public void createPad (boolean hall) {
@@ -174,8 +184,7 @@ public class NexusHandler {
             // Remove previous pad, if there is one
             if (hallPadLocation != null) {
                 // Destroy the blocks
-                hallPadLocation.getBlock().getRelative(BlockFace.DOWN).setType(Material.STONE);
-                hallPadLocation.getBlock().setType(Material.AIR);
+                breakPad(hallPadLocation);
             }
             // Make the new pad where the player is
             hallPadLocation=createPadAtPlayer();
@@ -183,8 +192,7 @@ public class NexusHandler {
             // Remove previous pad, if there is one
             if (townPadLocation != null) {
                 // Destroy the blocks
-                townPadLocation.getBlock().getRelative(BlockFace.DOWN).setType(Material.STONE);
-                townPadLocation.getBlock().setType(Material.AIR);
+                breakPad(townPadLocation);
             }
             // Make the pad where the player is
             townPadLocation=createPadAtPlayer();
@@ -205,12 +213,10 @@ public class NexusHandler {
     public void remove () {
         // Remove pads and delete config for this pad
         if (hallPadLocation != null) {
-            hallPadLocation.getBlock().getRelative(BlockFace.DOWN).setType(Material.STONE);
-            hallPadLocation.getBlock().setType(Material.AIR);
+            breakPad(hallPadLocation);
         }
         if (townPadLocation != null) {
-            townPadLocation.getBlock().getRelative(BlockFace.DOWN).setType(Material.STONE);
-            townPadLocation.getBlock().setType(Material.AIR);
+            breakPad(townPadLocation);
         }
         nexus.getConfig().set("pairs."+town,null);
         nexus.NexusMap.remove(getHashHallLocation());
@@ -235,7 +241,7 @@ public class NexusHandler {
 
         public void run() {
             source.setY(source.getY() - 0.5); // Bring it to ground level
-            if (!(destination.getBlock().getType() == Material.STONE_PLATE || override)) {
+            if (!(destination.getBlock().getType() == plateMaterial || override)) {
                 nexus.msgPlayer(player,String.format(nexus.getConfig().getString("messages.disabled"),town));
                 return;
             }

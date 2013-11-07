@@ -2,6 +2,7 @@ chatcolor: GOLD
 padmaterial: LAPIS_BLOCK
 platematerial: STONE_PLATE
 cooldown: 3
+triggerradius: 2
 messages:
     # If a message is the word "empty" (unquoted) it will not be displayed.
     # Using a blank entry will revert it to the default.

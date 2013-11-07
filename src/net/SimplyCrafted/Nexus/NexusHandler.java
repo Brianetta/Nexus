@@ -7,7 +7,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-
 import java.util.List;
 
 /**
@@ -260,7 +259,7 @@ public class NexusHandler {
                 nexus.msgPlayer(player,String.format(nexus.getConfig().getString("messages.disabled"),town));
                 return;
             }
-            if (player.getLocation().distance(source) < 0.5) {
+            if (player.getLocation().distance(source) < nexus.getConfig().getDouble("triggerradius")) {
                 // Player's on the pad
                 player.teleport(destination);
                 nexus.msgPlayer(player,String.format(nexus.getConfig().getString("messages.traveling"),town));

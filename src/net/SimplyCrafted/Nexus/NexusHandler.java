@@ -147,7 +147,7 @@ public class NexusHandler {
         // Place a block under the player's feet, and pop a stone
         // pressure plate upon it.
         Material padMaterial;
-        Block padBlock;
+        Block plateBlock,padBlock;
         List <String> allowedBlocks = nexus.getConfig().getStringList("allowedblocks");
         if ((player.getItemInHand().getType() != null) && allowedBlocks.contains(player.getItemInHand().getType().name())) {
             // The player is holding a valid block, so let's make the pad with that type.
@@ -171,13 +171,19 @@ public class NexusHandler {
             if (padMaterial == null) padMaterial = Material.LAPIS_BLOCK;
         }
         Location locationFromPlayer = createLocationFromPlayer();
-        padBlock = player.getWorld().getBlockAt(locationFromPlayer);
-        // Break & place the block below the player
-        Block underBlock = padBlock.getRelative(BlockFace.DOWN);
-        underBlock.breakNaturally();
-        underBlock.setType(padMaterial);
+        plateBlock = player.getWorld().getBlockAt(locationFromPlayer);
+        padBlock = plateBlock.getRelative(BlockFace.DOWN);
+        // Break whatever's in the plate location
+        if (plateBlock.getType() != plateMaterial) {
+            plateBlock.breakNaturally();
+        } else {
+            plateBlock.setType(Material.AIR);
+        }
+        // Break the block below the player
+        padBlock.breakNaturally();
         // Place the pressure plate on the block
-        padBlock.setType(plateMaterial);
+        padBlock.setType(padMaterial);
+        plateBlock.setType(plateMaterial);
         return locationFromPlayer;
     }
 

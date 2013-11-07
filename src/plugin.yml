@@ -1,6 +1,6 @@
 name: Nexus
 main: net.SimplyCrafted.Nexus.Nexus
-version: 0.1
+version: 0.2
 author: Brian Ronald
 commands:
     nexus:

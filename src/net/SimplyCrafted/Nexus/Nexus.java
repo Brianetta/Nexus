@@ -211,8 +211,16 @@ public class Nexus extends JavaPlugin {
                     if (player.hasPermission("Nexus.create")) {
                         if (args.length == 1)
                             listNexus(player);
-                        else
-                            listNexus(player, Integer.parseInt(args[1]));
+                        else {
+                            int page;
+                            try {
+                                page = Integer.parseInt(args[1]);
+                            }
+                            catch (NumberFormatException e){
+                                page = 1;
+                            }
+                            listNexus(player,page);
+                        }
                     } else {
                         msgPlayer(player, getConfig().getString("messages.nopermtolist"));
                     }

@@ -179,10 +179,16 @@ public class NexusHandler {
         } else {
             plateBlock.setType(Material.AIR);
         }
-        // Break the block below the player
-        padBlock.breakNaturally();
-        // Place the pressure plate on the block
-        padBlock.setType(padMaterial);
+        // Check if the block is bedrock
+        if (padBlock.getType() != Material.BEDROCK) {
+            // Check whether the player is in creative mode
+            if (player.getGameMode() != GameMode.CREATIVE) {
+                // Break the block below the player
+                padBlock.breakNaturally();
+            }
+            // Place the pressure plate on the block
+            padBlock.setType(padMaterial);
+        }
         plateBlock.setType(plateMaterial);
         return locationFromPlayer;
     }

@@ -186,9 +186,9 @@ public class NexusHandler {
                 // Break the block below the player
                 padBlock.breakNaturally();
             }
-            // Place the pressure plate on the block
             padBlock.setType(padMaterial);
         }
+        // Place the pressure plate on the block
         plateBlock.setType(plateMaterial);
         return locationFromPlayer;
     }

@@ -182,7 +182,7 @@ public class NexusHandler {
         // Check if the block is bedrock
         if (padBlock.getType() != Material.BEDROCK) {
             // Check whether the player is in creative mode
-            if (player.getGameMode() != GameMode.CREATIVE) {
+            if (!(player.getGameMode().equals(GameMode.CREATIVE))) {
                 // Break the block below the player
                 padBlock.breakNaturally();
             }

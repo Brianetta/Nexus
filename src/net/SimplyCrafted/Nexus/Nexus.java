@@ -1,6 +1,7 @@
 package net.SimplyCrafted.Nexus;
 
 import com.palmergames.bukkit.towny.Towny;
+import com.palmergames.bukkit.towny.event.RenameTownEvent;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.ChatColor;
@@ -52,16 +53,18 @@ public class Nexus extends JavaPlugin {
         populateNexusMap();
         String chatcolor;
         Boolean colormatch = false;
+
+        // Register the handler that detects the player treading on a pad
+        getServer().getPluginManager().registerEvents(new NexusListener(this), this);
+
         towny = (Towny) this.getServer().getPluginManager().getPlugin("Towny");
         noTowny = (towny == null);
         if (noTowny) {
             getLogger().info("Towny not found - won't be using Mayor functions");
         } else {
             getLogger().info("Towny found - Mayor functions available");
+            getServer().getPluginManager().registerEvents(new TownyListener(towny), this);
         }
-
-        // Register the handler that detects the player treading on a pad
-        getServer().getPluginManager().registerEvents(new NexusListener(this), this);
 
         // Error checking: Make sure that the config contains a valid color
         chatcolor = getConfig().getString("chatcolor");
@@ -96,9 +99,12 @@ public class Nexus extends JavaPlugin {
         NexusMap.clear();
         Cooldown.clear();
         PlayerInteractEvent.getHandlerList().unregister(this);
+        if (!noTowny) RenameTownEvent.getHandlerList().unregister(this);
     }
 
     public void msgPlayer(Player player,String msg) {
+        if (player == null) return; // It can happen, in a Towny event handler
+
         // Can't override a default config value with an empty one, so
         // unfortunately we need a magic value. The word "empty".
         if (!(msg.isEmpty() || msg.equalsIgnoreCase("empty"))) player.sendMessage(ChatColor.valueOf(getConfig().getString("chatcolor")) + "[" + this.getName() + "] " + ChatColor.GRAY + msg.replace('_',' '));
@@ -186,7 +192,6 @@ public class Nexus extends JavaPlugin {
             catch (Exception testPadOK) {
                 // *Shrug* Don't care.
             }
-            getLogger().info("Test: " + testPad + " Town name: " + town.getName() + " Location: " + pair.getTownPadLocation());
             if (!(town.getName().equals(testPad)) && pair.getTownPadLocation() != null) {
                 // The town pad exists, but isn't within the town. The mayor might be
                 // attempting to subvert a non-town Nexus with their town name.

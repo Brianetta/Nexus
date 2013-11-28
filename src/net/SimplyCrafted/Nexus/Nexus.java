@@ -9,6 +9,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -211,7 +212,11 @@ public class Nexus extends JavaPlugin {
                 msgPlayer(player, String.format(getConfig().getString("messages.paidfromtownbank"),feeInt));
                 town.pay(fee, "Nexus");
                 if (!pair.isEstablished()) {
-                    msgPlayer(player, getConfig().getString("messages.filemodreqnow"));
+                    PluginCommand modreq = this.getServer().getPluginCommand("modreq");
+                    if (modreq != null) {
+                        String[] modreqContent = {String.format(getConfig().getString("messages.modreq"),town.getName())};
+                        modreq.execute(player, "modreq", modreqContent);
+                    }
                 }
                 return true;
             } else {

@@ -1,6 +1,10 @@
 package net.SimplyCrafted.Nexus;
 
+import com.palmergames.bukkit.towny.Towny;
+import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -39,12 +43,22 @@ public class Nexus extends JavaPlugin {
         Cooldown = new HashMap<String, Boolean>();
     }
 
+    public Towny towny;
+    public Boolean noTowny = false;
+
     @Override
     public void onEnable() {
         saveDefaultConfig();
         populateNexusMap();
         String chatcolor;
         Boolean colormatch = false;
+        towny = (Towny) this.getServer().getPluginManager().getPlugin("Towny");
+        noTowny = (towny == null);
+        if (noTowny) {
+            getLogger().info("Towny not found - won't be using Mayor functions");
+        } else {
+            getLogger().info("Towny found - Mayor functions available");
+        }
 
         // Register the handler that detects the player treading on a pad
         getServer().getPluginManager().registerEvents(new NexusListener(this), this);
@@ -143,6 +157,64 @@ public class Nexus extends JavaPlugin {
         listNexus(player,1);
     }
 
+    String townBelongingTo(Player player) {
+        if (noTowny) return null;
+        try {
+            Resident resident;
+            resident = towny.getTownyUniverse().getDataSource().getResident(player.getName());
+            String townName = resident.getTown().getName();
+            if ((resident.isMayor() &&
+                  (townName.equals(towny.getTownyUniverse().getTownName(player.getLocation()))))) {
+                return townName;
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    Boolean getPaymentFromTown(Player player, NexusHandler pair) {
+        Integer feeInt;
+        double fee;
+        try {
+            Town town = towny.getTownyUniverse().getDataSource().getTown(pair.getName());
+            String testPad = null;
+            try {
+                testPad = towny.getTownyUniverse().getTownName(pair.getTownPadLocation());
+            }
+            catch (Exception testPadOK) {
+                // *Shrug* Don't care.
+            }
+            getLogger().info("Test: " + testPad + " Town name: " + town.getName() + " Location: " + pair.getTownPadLocation());
+            if (!(town.getName().equals(testPad)) && pair.getTownPadLocation() != null) {
+                // The town pad exists, but isn't within the town. The mayor might be
+                // attempting to subvert a non-town Nexus with their town name.
+                // Just abort.
+                msgPlayer(player, getConfig().getString("messages.nameproblem"));
+                return false;
+            }
+            if (pair.isEstablished()) {
+                feeInt = getConfig().getInt("townyfeemove");
+                msgPlayer(player, String.format(getConfig().getString("messages.takefeemove"),feeInt));
+            } else {
+                feeInt = getConfig().getInt("townyfeenew");
+                msgPlayer(player, String.format(getConfig().getString("messages.takefeenew"),feeInt));
+            }
+            fee = feeInt.doubleValue();
+            if (town.canPayFromHoldings(fee)) {
+                msgPlayer(player, String.format(getConfig().getString("messages.paidfromtownbank"),feeInt));
+                town.pay(fee, "Nexus");
+                return true;
+            } else {
+                msgPlayer(player, String.format(getConfig().getString("messages.towncannotafford"),feeInt));
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return false;
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("Nexus")) {
@@ -153,7 +225,20 @@ public class Nexus extends JavaPlugin {
             Player player = (Player) sender;
             if (args.length > 0) {
                 if (args[0].equalsIgnoreCase("build")) {
-                    if (player.hasPermission("Nexus.create")) {
+                    String townName = townBelongingTo(player);
+                    if (!(townName == null) && args.length == 1) {
+                        // Player is a town mayor in his town, and only issued /nexus build
+                        if (player.getGameMode().equals(GameMode.CREATIVE)) {
+                            msgPlayer(player, getConfig().getString("messages.nocreativebuild"));
+                            return true;
+                        }
+                        msgPlayer(player, String.format(getConfig().getString("messages.buildingtown"), townName));
+                        NexusHandler pair = new NexusHandler(this,townName,player);
+                        if (getPaymentFromTown(player,pair)) {
+                            pair.createPad(false);
+                        }
+                        pair.close();
+                    } else if (player.hasPermission("Nexus.create")) {
                         if (args.length == 3) {
                             if (args[2].equalsIgnoreCase("town")) {
                                 msgPlayer(player, String.format(getConfig().getString("messages.buildingtown"), args[1]));
@@ -166,8 +251,10 @@ public class Nexus extends JavaPlugin {
                                 pair.createPad(true);
                                 pair.close();
                             } else {
-                                msgPlayer(player, "You must specify a name, followed by either the word \"hall\" or the word \"town\"");
+                                msgPlayer(player, getConfig().getString("messages.buildhelp"));
                             }
+                        } else {
+                            msgPlayer(player, getConfig().getString("messages.buildhelp"));
                         }
                     } else {
                         msgPlayer(player, getConfig().getString("messages.nopermtobuild"));

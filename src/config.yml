@@ -3,10 +3,15 @@ padmaterial: LAPIS_BLOCK
 platematerial: STONE_PLATE
 cooldown: 3
 triggerradius: 2
+townyfeenew: 5000
+townyfeemove: 1000
+
 messages:
     # If a message is the word "empty" (unquoted) it will not be displayed.
     # Using a blank entry will revert it to the default.
-    nopermtobuild:    You don't have permission to build a Nexus pad
+    nopermtobuild:    You don't have permission to build a Nexus pad here
+    nocreativebuild:  You cannot build a Nexus pad in creative mode
+    nameproblem:      A Nexus with the same name as your town exists outside your town. Contact a moderator for assistance.
     nopermtodestroy:  You do not have permission to destroy a Nexus
     nopermtooverride: You do not have permission to override a Nexus
     nopermtolist:     You do not have permission to list all Nexus
@@ -21,6 +26,11 @@ messages:
     disabled:         Traveling by %s Nexus pad disabled; pressure plate is missing at other end
     traveling:        Traveled using the %s Nexus pad
     aborted:          Nexus transport failed; you left the pad
+    takefeemove:      Moving a Nexus pad costs %d
+    takefeenew:       Building a new Nexus pad costs %d
+    paidfromtownbank: This fee has been paid from the town's bank
+    towncannotafford: There isn't enough in the town's bank to pay this
+    buildhelp:        You must specify a town name (case sensitive) and either "town" or "hall"
     buildingtown:     Building town pad for %s
     buildinghall:     Building hall pad for %s
     createdinworld:   Nexus created for %s; distance is %.1fm

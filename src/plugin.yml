@@ -14,6 +14,8 @@ commands:
             /nexus override
             /nexus warp
             /nexus reload
+softdepend:
+    - Towny
 permissions:
     Nexus.*:
         description: Access to all Nexus commands

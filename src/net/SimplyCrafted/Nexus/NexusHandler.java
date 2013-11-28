@@ -41,6 +41,10 @@ public class NexusHandler {
         return established;
     }
 
+    public Location getTownPadLocation() {
+        return townPadLocation;
+    }
+
     public String getName () {
         return town;
     }

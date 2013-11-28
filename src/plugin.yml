@@ -6,14 +6,17 @@ commands:
     nexus:
         description: Creates and activates a Nexus pad
         usage: |
-            /nexus build <town> town
-            /nexus build <town> hall
-            /nexus destroy <town>
-            /nexus list
-            /nexus info <town>
-            /nexus override
-            /nexus warp
-            /nexus reload
+            Town mayors only - build a Nexus pad in town:
+             /nexus build
+            Server staff only:
+             /nexus build <town> town
+             /nexus build <town> hall
+             /nexus destroy <town>
+             /nexus list
+             /nexus info <town>
+             /nexus override
+             /nexus warp
+             /nexus reload
 softdepend:
     - Towny
 permissions:

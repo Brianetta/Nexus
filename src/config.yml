@@ -29,6 +29,7 @@ messages:
     takefeemove:      Moving a Nexus pad costs %d
     takefeenew:       Building a new Nexus pad costs %d
     paidfromtownbank: This fee has been paid from the town's bank
+    filemodreqnow:    Please file a modreq asking to have the other end built
     towncannotafford: There isn't enough in the town's bank to pay this
     buildhelp:        You must specify a town name (case sensitive) and either "town" or "hall"
     buildingtown:     Building town pad for %s

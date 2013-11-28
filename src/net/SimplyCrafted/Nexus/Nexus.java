@@ -210,6 +210,9 @@ public class Nexus extends JavaPlugin {
             if (town.canPayFromHoldings(fee)) {
                 msgPlayer(player, String.format(getConfig().getString("messages.paidfromtownbank"),feeInt));
                 town.pay(fee, "Nexus");
+                if (!pair.isEstablished()) {
+                    msgPlayer(player, getConfig().getString("messages.filemodreqnow"));
+                }
                 return true;
             } else {
                 msgPlayer(player, String.format(getConfig().getString("messages.towncannotafford"),feeInt));

@@ -42,7 +42,7 @@ public class NexusListener implements Listener {
         // Check whether the block still exists
         if (event.getClickedBlock() == null) return;
         // Check the player did something to a stone pressure plate
-        if (!(event.getClickedBlock().getState().getType() == Material.STONE_PLATE)) return;
+        if (!(event.getClickedBlock().getState().getType() == Material.getMaterial(nexus.getConfig().getString("platematerial")))) return;
         // Check that that something involved, you know, feet
         if (!(event.getAction() == Action.PHYSICAL)) return;
         // Try to get the name of the town from the hash, using the location of the pressure plate

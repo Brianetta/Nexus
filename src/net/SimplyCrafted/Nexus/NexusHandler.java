@@ -346,5 +346,6 @@ public class NexusHandler {
         // Always call this method after you're done creating or renaming a Nexus.
         nexus.getConfig().set("pairs."+town+".hallLocation",serializeLocation(hallPadLocation));
         nexus.getConfig().set("pairs."+town+".townLocation",serializeLocation(townPadLocation));
+        nexus.saveConfig();
     }
 }

@@ -251,9 +251,12 @@ public class Nexus extends JavaPlugin {
                         msgPlayer(player, String.format(getConfig().getString("messages.buildingtown"), townName));
                         NexusHandler pair = new NexusHandler(this,townName,player);
                         if (getPaymentFromTown(player,pair)) {
-                            pair.createPad(false);
+                            if (pair.createPad(false)) {
+                                pair.close();
+                            } else {
+                                msgPlayer(player, getConfig().getString("messages.alreadythere"));
+                            }
                         }
-                        pair.close();
                     } else if (player.hasPermission("Nexus.create")) {
                         if (args.length == 3) {
                             if (args[2].equalsIgnoreCase("town")) {
@@ -266,8 +269,11 @@ public class Nexus extends JavaPlugin {
                                 }
                                 msgPlayer(player, String.format(getConfig().getString("messages.buildingtown"), townName));
                                 NexusHandler pair = new NexusHandler(this,townName,player);
-                                pair.createPad(false);
-                                pair.close();
+                                if (pair.createPad(false)) {
+                                    pair.close();
+                                } else {
+                                    msgPlayer(player, getConfig().getString("messages.alreadythere"));
+                                }
                             } else if (args[2].equalsIgnoreCase("hall")) {
                                 // If the town name already exists in the config, unify its case.
                                 townName = args[1];
@@ -278,8 +284,11 @@ public class Nexus extends JavaPlugin {
                                 }
                                 msgPlayer(player, String.format(getConfig().getString("messages.buildinghall"), townName));
                                 NexusHandler pair = new NexusHandler(this, townName, player);
-                                pair.createPad(true);
-                                pair.close();
+                                if (pair.createPad(true)) {
+                                    pair.close();
+                                } else {
+                                    msgPlayer(player, getConfig().getString("messages.alreadythere"));
+                                }
                             } else {
                                 msgPlayer(player, getConfig().getString("messages.buildhelp"));
                             }

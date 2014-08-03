@@ -34,6 +34,7 @@ messages:
     buildhelp:        You must specify a town name (case sensitive) and either "town" or "hall"
     buildingtown:     Building town pad for %s
     buildinghall:     Building hall pad for %s
+    alreadythere:     'Aborting: there is already a pad at this location'
     createdinworld:   Nexus created for %s; distance is %.1fm
     createdexworld:   Nexus created for %s; Nexus is trans-world
     destroying:       Destroying both pads for %s

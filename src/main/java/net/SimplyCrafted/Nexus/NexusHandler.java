@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import java.util.List;
 
@@ -74,14 +75,6 @@ public class NexusHandler {
         return String.format("%s %f %f %f %f", location.getWorld().getName(), location.getX(), location.getY(), location.getZ(), location.getYaw());
     }
 
-    public String getSerializedTownLocation () {
-        return serializeLocation(townPadLocation);
-    }
-
-    public String getSerializedHallLocation () {
-        return serializeLocation(hallPadLocation);
-    }
-
     // These next three are like the three above, but have no Yaw info.
 
     private String hashLocation (Location location) {
@@ -117,14 +110,19 @@ public class NexusHandler {
         this.nexus = instance;
         town = name;
         player = creator;
-        String tempLoc;
+        String tempLoc = null;
         boolean establishFlag = false;
-        tempLoc = nexus.getConfig().getString("pairs." + name + ".hallLocation");
+        ConfigurationSection pairConfig = nexus.getConfig().getConfigurationSection("pairs." + name);
+        if (pairConfig != null) {
+            tempLoc = pairConfig.getString("hallLocation");
+        }
         if (tempLoc != null && !tempLoc.equalsIgnoreCase("null")) {
             hallPadLocation = unserializeLocation(tempLoc);
             establishFlag = true;
         }
-        tempLoc = nexus.getConfig().getString("pairs." + name + ".townLocation");
+        if (pairConfig != null) {
+            tempLoc = pairConfig.getString("townLocation");
+        }
         if (tempLoc != null && !tempLoc.equalsIgnoreCase("null")) {
             townPadLocation = unserializeLocation(tempLoc);
             if (establishFlag) established = true;
@@ -204,12 +202,33 @@ public class NexusHandler {
         }
     }
 
-    public void createPad (boolean hall) {
+    private boolean checkLocation(String hashLocation) {
+        // returns true if a location is already occupied by a pad
+        ConfigurationSection pairs = nexus.getConfig().getConfigurationSection("pairs");
+        for (String key : pairs.getKeys(false)) {
+            if (!key.equalsIgnoreCase(town)) {
+                if (pairs.getConfigurationSection(key).getString("townLocation").matches("^" + hashLocation + ".*$")) {
+                    return true;
+                }
+                if (pairs.getConfigurationSection(key).getString("hallLocation").matches("^" + hashLocation + ".*$")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean createPad (boolean hall) {
         // Remove it from the main hash, it's not going to be valid now.
         // Don't particularly care if it fails, that just means it was
-        // never hashed anyway,.
-        nexus.NexusMap.remove(getSerializedTownLocation());
-        nexus.NexusMap.remove(getSerializedHallLocation());
+        // never hashed anyway.
+
+        if (checkLocation(hashLocation(createLocationFromPlayer()))) {
+            return false;
+        }
+
+        nexus.NexusMap.remove(getHashTownLocation());
+        nexus.NexusMap.remove(getHashHallLocation());
         if (hall) {
             // Remove previous pad, if there is one
             if (hallPadLocation != null) {
@@ -238,6 +257,7 @@ public class NexusHandler {
             nexus.NexusMap.put(getHashHallLocation(),town);
             nexus.NexusMap.put(getHashTownLocation(),town);
         }
+        return true;
     }
 
     public void remove () {
@@ -251,6 +271,7 @@ public class NexusHandler {
         nexus.getConfig().set("pairs."+town,null);
         nexus.NexusMap.remove(getHashHallLocation());
         nexus.NexusMap.remove(getHashTownLocation());
+        nexus.saveConfig();
     }
 
     // Schedulable runnable that activates the teleport

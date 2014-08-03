@@ -12,6 +12,10 @@
             <id>bukkit-repo</id>
             <url>http://repo.bukkit.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>Towny-repo</id>
+            <url>file://${project.basedir}/repo</url>
+        </repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -19,6 +23,12 @@
             <artifactId>bukkit</artifactId>
             <scope>provided</scope>
             <version>1.7.9-R0.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.palmergames</groupId>
+            <artifactId>Towny</artifactId>
+            <version>0.88.0.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     <build>

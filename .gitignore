@@ -38,3 +38,5 @@ Ant files
 *.iws
 .idea/
 
+# Included JARs not for distribution
+/repo/com/palmergames/Towny/0.88.0.0/Towny-0.88.0.0.jar

@@ -14,7 +14,7 @@
         </repository>
         <repository>
             <id>Towny-repo</id>
-            <url>file://${project.basedir}/repo</url>
+            <url>http://play.simplycrafted.net/repo-6b4114f4dc94ef3ad8737bddd9be3f05/</url>
         </repository>
     </repositories>
     <dependencies>

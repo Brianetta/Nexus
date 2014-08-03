@@ -142,20 +142,14 @@ public class Nexus extends JavaPlugin {
     public void listNexus (Player player, int page) {
         final int linesPerPage=9; // Pagination constant
         NexusHandler pair;
-        SortedSet<String> sortedKeys=new TreeSet<String>(getConfig().getKeys(true));
+        SortedSet<String> sortedKeys=new TreeSet<>(getConfig().getConfigurationSection("pairs").getKeys(false));
         int counter=0; // I'm so sorry, please forgive me. )-:
         for (String configKeys : sortedKeys) {
-            // Magic numbers:
-            // 5 is the position of the '.' in "pairs."
-            // 6 is the position of the next character.
-            if (configKeys.startsWith("pairs.") && configKeys.lastIndexOf(".") == 5) {
-                if (counter >= (page-1)*linesPerPage && counter < page*linesPerPage) {
-                    // configKeys.substring(6) is a town name
-                    pair = new NexusHandler(this,configKeys.substring(6),player);
-                    pair.shortInfo();
-                }
-                counter++; // I know, this hurts
+            if (counter >= (page-1)*linesPerPage && counter < page*linesPerPage) {
+                pair = new NexusHandler(this,configKeys,player);
+                pair.shortInfo();
             }
+            counter++; // I know, this hurts
         }
         msgPlayer(player,String.format("Page %d of %d",page,(counter/linesPerPage)+1));
     }
@@ -240,6 +234,12 @@ public class Nexus extends JavaPlugin {
                 if (args[0].equalsIgnoreCase("build")) {
                     String townName = townBelongingTo(player);
                     if (!(townName == null) && args.length == 1) {
+                        // If the town name already exists in the config, unify its case.
+                        for (String configuredName : getConfig().getConfigurationSection("pairs").getKeys(false)) {
+                            if (configuredName.equalsIgnoreCase(townName)) {
+                                townName = configuredName; // Force the name to have original case
+                            }
+                        }
                         // Player is a town mayor in his town, and only issued /nexus build
                         if (player.getGameMode().equals(GameMode.CREATIVE)) {
                             msgPlayer(player, getConfig().getString("messages.nocreativebuild"));
@@ -254,13 +254,27 @@ public class Nexus extends JavaPlugin {
                     } else if (player.hasPermission("Nexus.create")) {
                         if (args.length == 3) {
                             if (args[2].equalsIgnoreCase("town")) {
-                                msgPlayer(player, String.format(getConfig().getString("messages.buildingtown"), args[1]));
-                                NexusHandler pair = new NexusHandler(this,args[1],player);
+                                // If the town name already exists in the config, unify its case.
+                                townName = args[1];
+                                for (String configuredName : getConfig().getConfigurationSection("pairs").getKeys(false)) {
+                                    if (configuredName.equalsIgnoreCase(townName)) {
+                                        townName = configuredName; // Force the name to have original case
+                                    }
+                                }
+                                msgPlayer(player, String.format(getConfig().getString("messages.buildingtown"), townName));
+                                NexusHandler pair = new NexusHandler(this,townName,player);
                                 pair.createPad(false);
                                 pair.close();
                             } else if (args[2].equalsIgnoreCase("hall")) {
-                                msgPlayer(player, String.format(getConfig().getString("messages.buildinghall"), args[1]));
-                                NexusHandler pair = new NexusHandler(this, args[1], player);
+                                // If the town name already exists in the config, unify its case.
+                                townName = args[1];
+                                for (String configuredName : getConfig().getConfigurationSection("pairs").getKeys(false)) {
+                                    if (configuredName.equalsIgnoreCase(townName)) {
+                                        townName = configuredName; // Force the name to have original case
+                                    }
+                                }
+                                msgPlayer(player, String.format(getConfig().getString("messages.buildinghall"), townName));
+                                NexusHandler pair = new NexusHandler(this, townName, player);
                                 pair.createPad(true);
                                 pair.close();
                             } else {
@@ -275,8 +289,14 @@ public class Nexus extends JavaPlugin {
                 } else if (args[0].equalsIgnoreCase("destroy")) {
                     if (player.hasPermission("Nexus.create")) {
                         if (args.length == 2) {
+                            String townName = args[1];
+                            for (String configuredName : getConfig().getConfigurationSection("pairs").getKeys(false)) {
+                                if (configuredName.equalsIgnoreCase(townName)) {
+                                    townName = configuredName; // Force the name to have original case
+                                }
+                            }
                             msgPlayer(player, String.format(getConfig().getString("messages.destroying"), args[1]));
-                            NexusHandler pair = new NexusHandler(this,args[1],player);
+                            NexusHandler pair = new NexusHandler(this,townName,player);
                             pair.remove();
                         } else {
                             msgPlayer(player, getConfig().getString("messages.specifyname"));
@@ -327,7 +347,13 @@ public class Nexus extends JavaPlugin {
                 } else if (args[0].equalsIgnoreCase("info")) {
                     if (player.hasPermission("Nexus.create")) {
                         if (args.length == 2) {
-                            NexusHandler pair = new NexusHandler(this, args[1], player);
+                            String townName = args[1];
+                            for (String configuredName : getConfig().getConfigurationSection("pairs").getKeys(false)) {
+                                if (configuredName.equalsIgnoreCase(townName)) {
+                                    townName = configuredName; // Force the name to have original case
+                                }
+                            }
+                            NexusHandler pair = new NexusHandler(this, townName, player);
                             pair.longInfo();
                         } else {
                             msgPlayer(player, getConfig().getString("messages.specifyname"));
@@ -338,7 +364,13 @@ public class Nexus extends JavaPlugin {
                 } else if (args[0].equalsIgnoreCase("warp")) {
                     if (player.hasPermission("Nexus.warp")) {
                         if (args.length == 2) {
-                            NexusHandler pair = new NexusHandler(this, args[1], player);
+                            String townName = args[1];
+                            for (String configuredName : getConfig().getConfigurationSection("pairs").getKeys(false)) {
+                                if (configuredName.equalsIgnoreCase(townName)) {
+                                    townName = configuredName; // Force the name to have original case
+                                }
+                            }
+                            NexusHandler pair = new NexusHandler(this, townName, player);
                             pair.warpTo();
                         } else {
                             msgPlayer(player, getConfig().getString("messages.specifyname"));
@@ -358,7 +390,13 @@ public class Nexus extends JavaPlugin {
                 } else if (args[0].equalsIgnoreCase("rename")) {
                     if (player.hasPermission("Nexus.create")) {
                         if (args.length == 3) {
-                            NexusHandler pair = new NexusHandler(this,args[1],player);
+                            String townName = args[1];
+                            for (String configuredName : getConfig().getConfigurationSection("pairs").getKeys(false)) {
+                                if (configuredName.equalsIgnoreCase(townName)) {
+                                    townName = configuredName; // Force the name to have original case
+                                }
+                            }
+                            NexusHandler pair = new NexusHandler(this,townName,player);
                             pair.rename(args[2]);
                             pair.close();
                         }

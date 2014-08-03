@@ -51,6 +51,9 @@ public class Nexus extends JavaPlugin {
     @Override
     public void onEnable() {
         saveDefaultConfig();
+        if (getConfig().getConfigurationSection("pairs") == null) {
+            getConfig().createSection("pairs");
+        }
         populateNexusMap();
         String chatcolor;
         Boolean colormatch = false;

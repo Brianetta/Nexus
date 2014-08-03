@@ -41,8 +41,8 @@ public class Nexus extends JavaPlugin {
     public HashMap <String, Boolean> Cooldown;
 
     public Nexus() {
-        NexusMap = new HashMap<String, String>();
-        Cooldown = new HashMap<String, Boolean>();
+        NexusMap = new HashMap<>();
+        Cooldown = new HashMap<>();
     }
 
     public Towny towny;

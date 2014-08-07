@@ -207,10 +207,10 @@ public class NexusHandler {
         ConfigurationSection pairs = nexus.getConfig().getConfigurationSection("pairs");
         for (String key : pairs.getKeys(false)) {
             if (!key.equalsIgnoreCase(town)) {
-                if (pairs.getConfigurationSection(key).getString("townLocation").matches("^" + hashLocation + ".*$")) {
+                if (pairs.getConfigurationSection(key).getString("townLocation") != null & pairs.getConfigurationSection(key).getString("townLocation").matches("^" + hashLocation + ".*$")) {
                     return true;
                 }
-                if (pairs.getConfigurationSection(key).getString("hallLocation").matches("^" + hashLocation + ".*$")) {
+                if (pairs.getConfigurationSection(key).getString("HallLocation") != null & pairs.getConfigurationSection(key).getString("hallLocation").matches("^" + hashLocation + ".*$")) {
                     return true;
                 }
             }

@@ -4,6 +4,8 @@ import com.palmergames.bukkit.towny.Towny;
 import com.palmergames.bukkit.towny.event.RenameTownEvent;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.object.TownyUniverse;
+
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -165,10 +167,10 @@ public class Nexus extends JavaPlugin {
         if (noTowny) return null;
         try {
             Resident resident;
-            resident = towny.getTownyUniverse().getDataSource().getResident(player.getName());
+            resident = TownyUniverse.getDataSource().getResident(player.getName());
             String townName = resident.getTown().getName();
             if ((resident.isMayor() &&
-                  (townName.equals(towny.getTownyUniverse().getTownName(player.getLocation()))))) {
+                  (townName.equals(TownyUniverse.getTownName(player.getLocation()))))) {
                 return townName;
             } else {
                 return null;
@@ -182,10 +184,10 @@ public class Nexus extends JavaPlugin {
         Integer feeInt;
         double fee;
         try {
-            Town town = towny.getTownyUniverse().getDataSource().getTown(pair.getName());
+            Town town = TownyUniverse.getDataSource().getTown(pair.getName());
             String testPad = null;
             try {
-                testPad = towny.getTownyUniverse().getTownName(pair.getTownPadLocation());
+                testPad = TownyUniverse.getTownName(pair.getTownPadLocation());
             }
             catch (Exception testPadOK) {
                 // *Shrug* Don't care.

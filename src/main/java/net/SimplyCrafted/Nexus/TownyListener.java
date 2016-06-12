@@ -2,6 +2,8 @@ package net.SimplyCrafted.Nexus;
 
 import com.palmergames.bukkit.towny.Towny;
 import com.palmergames.bukkit.towny.event.RenameTownEvent;
+import com.palmergames.bukkit.towny.object.TownyUniverse;
+
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -42,7 +44,7 @@ public class TownyListener  implements Listener {
         // Now check whether that pad is within the town
         String testPad = null;
         try {
-            testPad = towny.getTownyUniverse().getTownName(padLocation);
+            testPad = TownyUniverse.getTownName(padLocation);
         }
         catch (Exception testPadOK) {
             // No town there? No need to rename, we can bomb out.

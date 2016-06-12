@@ -151,19 +151,19 @@ public class NexusHandler {
         Material padMaterial;
         Block plateBlock,padBlock;
         List <String> allowedBlocks = nexus.getConfig().getStringList("allowedblocks");
-        if ((player.getItemInHand().getType() != null) && allowedBlocks.contains(player.getItemInHand().getType().name())) {
+        if ((player.getInventory().getItemInMainHand().getType() != null) && allowedBlocks.contains(player.getInventory().getItemInMainHand().getType().name())) {
             // The player is holding a valid block, so let's make the pad with that type.
-            padMaterial = player.getItemInHand().getType();
+            padMaterial = player.getInventory().getItemInMainHand().getType();
             // If the player is not in creative mode, take the block off them.
             if (!(player.getGameMode().equals(GameMode.CREATIVE))) {
-                int stackHeight = player.getItemInHand().getAmount();
+                int stackHeight = player.getInventory().getItemInMainHand().getAmount();
                 // If there's more than one item in the player's hand,
                 if (stackHeight > 1 ) {
                     // take one away
-                    player.getItemInHand().setAmount(stackHeight-1);
+                    player.getInventory().getItemInMainHand().setAmount(stackHeight-1);
                 } else {
                     // otherwise take the only one away.
-                    player.getInventory().remove(player.getItemInHand());
+                    player.getInventory().remove(player.getInventory().getItemInMainHand());
                 }
             }
         }
